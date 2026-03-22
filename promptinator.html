@@ -158,40 +158,38 @@
         // KONFIGURATION - Diese Werte musst du anpassen:
         const CONFIG = {
             STRIPE_PUBLIC_KEY: 'pk_live_DEIN_STRIPE_PUBLIC_KEY',
-            PAYMENT_LINK: 'https://buy.stripe.com/cNicN445GdMG4UZ5bFbII02',
+            PAYMENT_LINK: 'https://buy.stripe.com/DEIN_PAYMENT_LINK',
             // Oder für Netlify Functions:
             API_ENDPOINT: '/.netlify/functions/optimize-prompt'
         };
 
         async function startPayment() {
-            const prompt = document.getElementById('prompt').value.trim();
-            if (!prompt) {
-                alert('Bitte gib einen Prompt ein.');
-                return;
-            }
-            
-            // Prompt in sessionStorage speichern für nach der Bezahlung
-            sessionStorage.setItem('pendingPrompt', prompt);
-            
-            // Weiterleitung zu Stripe Payment Link
-            window.location.href = CONFIG.PAYMENT_LINK + '?client_reference_id=' + encodeURIComponent(btoa(prompt.substring(0, 200)));
+        const prompt = document.getElementById('prompt').value.trim();
+        if (!prompt) {
+            alert('Bitte gib einen Prompt ein.');
+            return;
         }
+        // Prompt in localStorage speichern (überlebt Stripe-Redirect)
+        localStorage.setItem('pendingPrompt', prompt);
+        // Weiterleitung zu Stripe Payment Link
+        window.location.href = CONFIG.PAYMENT_LINK;
+    }
 
         // Nach erfolgreicher Zahlung (Stripe leitet zurück mit ?success=true)
         async function checkPaymentAndOptimize() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sessionId = urlParams.get('session_id');
-            
-            if (sessionId) {
-                const prompt = sessionStorage.getItem('pendingPrompt');
-                if (prompt) {
-                    await optimizePrompt(prompt, sessionId);
-                    sessionStorage.removeItem('pendingPrompt');
-                    // URL bereinigen
-                    window.history.replaceState({}, '', window.location.pathname);
-                }
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        // Stripe Payment Link leitet zurück ohne session_id - wir prüfen einfach ob ein Prompt gespeichert ist
+        const prompt = localStorage.getItem('pendingPrompt');
+        if (prompt) {
+            // Prompt ins Eingabefeld setzen damit User es sieht
+            document.getElementById('prompt').value = prompt;
+            // Automatisch optimieren
+            await optimizePrompt(prompt, null);
+            localStorage.removeItem('pendingPrompt');
+            // URL bereinigen
+            window.history.replaceState({}, '', window.location.pathname);
         }
+    }
 
         async function optimizePrompt(prompt, sessionId) {
             const btn = document.getElementById('payBtn');
