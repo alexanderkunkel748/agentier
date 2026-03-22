@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promptinator - KI-Prompt Optimierung</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 40px; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        textarea:focus { outline: none; border-color: #7c3aed; }
+        .price-tag {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .price { font-size: 1.5rem; font-weight: bold; color: #00d4ff; }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #7c3aed, #00d4ff);
+            color: #fff;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .result-card { margin-top: 30px; display: none; }
+        .result-card.show { display: block; }
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .result-content {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        .copy-btn { padding: 8px 16px; font-size: 0.9rem; width: auto; }
+        .loader { display: none; text-align: center; padding: 40px; }
+        .loader.show { display: block; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Promptinator</h1>
+        <p class="subtitle">Optimiere deinen Prompt für maximale KI-Performance</p>
+        
+        <div class="card">
+            <label for="prompt">Dein Prompt:</label>
+            <textarea id="prompt" placeholder="Gib hier deinen Prompt ein, den du optimieren möchtest..."></textarea>
+            
+            <div class="price-tag">
+                <span>Prompt-Optimierung mit Claude Opus 4.6</span>
+                <span class="price">0,99 €</span>
+            </div>
+            
+            <button id="payBtn" onclick="startPayment()">💳 Bezahlen & Optimieren</button>
+        </div>
+        
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p>Dein Prompt wird optimiert...</p>
+        </div>
+        
+        <div class="card result-card" id="resultCard">
+            <div class="result-header">
+                <h3>✨ Optimierter Prompt</h3>
+                <button class="copy-btn" onclick="copyResult()">📋 Kopieren</button>
+            </div>
+            <div class="result-content" id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const PAYMENT_LINK = 'https://buy.stripe.com/test_28E7sL8IseKH2ZZfx29IQ00';
+
+        function startPayment() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) { alert('Bitte gib einen Prompt ein.'); return; }
+            sessionStorage.setItem('pendingPrompt', prompt);
+            window.location.href = PAYMENT_LINK;
+        }
+
+        async function checkAndOptimize() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true' || urlParams.get('session_id')) {
+                const prompt = sessionStorage.getItem('pendingPrompt');
+                if (prompt) {
+                    document.getElementById('prompt').value = prompt;
+                    await optimizePrompt(prompt);
+                    sessionStorage.removeItem('pendingPrompt');
+                    window.history.replaceState({}, '', window.location.pathname);
+                }
+            }
+        }
+
+        async function optimizePrompt(prompt) {
+            const btn = document.getElementById('payBtn');
+            const loader = document.getElementById('loader');
+            const resultCard = document.getElementById('resultCard');
+            
+            btn.disabled = true;
+            loader.classList.add('show');
+            
+            try {
+                const response = await fetch('/.netlify/functions/optimize-prompt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await response.json();
+                
+                if (data.optimizedPrompt) {
+                    document.getElementById('resultContent').textContent = data.optimizedPrompt;
+                    resultCard.classList.add('show');
+                } else {
+                    throw new Error(data.error || 'Fehler');
+                }
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                loader.classList.remove('show');
+            }
+        }
+
+        function copyResult() {
+            navigator.clipboard.writeText(document.getElementById('resultContent').textContent);
+            alert('Kopiert!');
+        }
+
+        checkAndOptimize();
+    </script>
+</body>
+</html>
