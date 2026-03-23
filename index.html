@@ -4,71 +4,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>agentier | KI-Beratung für Unternehmen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; overflow-x: hidden; background: #0a0a0a; }
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        .hero-bg { position: absolute; width: 150%; height: 150%; background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%); will-change: transform; }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .hero-bg {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            will-change: transform;
+        }
         .hero-content { position: relative; z-index: 2; padding: 20px; }
-        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: white; font-weight: 700; opacity: 0; transform: translateY(50px); }
-        .hero p { font-size: clamp(1rem, 2.5vw, 1.4rem); color: rgba(255,255,255,0.7); max-width: 600px; margin: 30px auto; opacity: 0; transform: translateY(30px); }
-        .cta-btn { background: #f59e0b; color: #0a0a0a; padding: 18px 50px; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; opacity: 0; transform: translateY(20px); transition: transform 0.3s, box-shadow 0.3s; }
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: white;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 30px auto;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .cta-btn {
+            background: #f59e0b;
+            color: #0a0a0a;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4); }
-        .scroll-indicator { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 0.9rem; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
-        .pinned-section { height: 300vh; position: relative; }
-        .pinned-content { height: 100vh; position: sticky; top: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; }
-        .pinned-text { position: absolute; font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 700; text-align: center; padding: 20px; opacity: 0; transform: scale(0.8); }
-        .services { padding: 150px 20px; background: #f8f9fa; }
-        .services h2 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; margin-bottom: 80px; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
-        .service-card { background: white; padding: 50px 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); opacity: 0; transform: translateY(80px); transition: transform 0.3s; }
-        .service-card:hover { transform: translateY(-10px); }
-        .service-icon { font-size: 3rem; margin-bottom: 25px; }
-        .service-card h3 { font-size: 1.5rem; color: #1e3a5f; margin-bottom: 15px; }
-        .parallax-section { height: 80vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .parallax-bg { position: absolute; width: 100%; height: 120%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920') center/cover; will-change: transform; }
-        .parallax-text { position: relative; z-index: 2; color: white; text-align: center; padding: 20px; }
-        .parallax-text h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 20px; }
-        .about { padding: 150px 20px; background: white; }
-        .about-content { max-width: 1000px; margin: 0 auto; display: flex; gap: 80px; align-items: center; flex-wrap: wrap; }
-        .about-image { flex: 1; min-width: 280px; aspect-ratio: 1; background: linear-gradient(135deg, #1e3a5f, #3b82f6); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; opacity: 0; transform: translateX(-100px) rotate(-5deg); }
-        .about-text { flex: 1; min-width: 300px; opacity: 0; transform: translateX(100px); }
-        .about-text h2 { font-size: 2.5rem; margin-bottom: 30px; }
-        .about-text p { margin-bottom: 20px; color: #555; font-size: 1.1rem; }
-        .contact { padding: 150px 20px; background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); text-align: center; color: white; }
-        .contact h2 { font-size: 3rem; margin-bottom: 30px; }
-        .contact p { font-size: 1.3rem; opacity: 0.8; margin-bottom: 50px; }
-        .contact-btn { background: white; color: #1e3a5f; padding: 20px 60px; font-size: 1.2rem; font-weight: 600; border-radius: 50px; text-decoration: none; display: inline-block; transition: transform 0.3s, box-shadow 0.3s; }
-        .contact-btn:hover { transform: scale(1.05); box-shadow: 0 15px 50px rgba(255,255,255,0.2); }
-        footer { background: #050505; color: #666; text-align: center; padding: 40px 20px; }
-        /* Promptinator Banner */
-        .promptinator-banner {
-            background: linear-gradient(90deg, #7c3aed, #00d4ff);
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Pinned Section */
+        .pinned-section {
+            height: 300vh;
+            position: relative;
+        }
+        .pinned-content {
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #fff;
+        }
+        .pinned-text {
+            position: absolute;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 700;
+            text-align: center;
             padding: 20px;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        .pinned-text.active { opacity: 1; transform: scale(1); }
+
+        /* Services */
+        .services {
+            padding: 150px 20px;
+            background: #f8f9fa;
+        }
+        .services h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .service-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(80px);
+            transition: transform 0.3s;
+        }
+        .service-card:hover { transform: translateY(-10px); }
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 25px;
+        }
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+
+        /* Parallax Image Section */
+        .parallax-section {
+            height: 80vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .parallax-bg {
+            position: absolute;
+            width: 100%;
+            height: 120%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920') center/cover;
+            will-change: transform;
+        }
+        .parallax-text {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .parallax-text h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+        }
+
+        /* About */
+        .about {
+            padding: 150px 20px;
+            background: white;
+        }
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            gap: 80px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .about-image {
+            flex: 1;
+            min-width: 280px;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateX(-100px) rotate(-5deg);
+        }
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        .about-text p { margin-bottom: 20px; color: #555; font-size: 1.1rem; }
+
+        /* Contact */
+        .contact {
+            padding: 150px 20px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
             text-align: center;
             color: white;
         }
-        .promptinator-banner a {
-            color: white;
-            font-weight: 700;
+        .contact h2 { font-size: 3rem; margin-bottom: 30px; }
+        .contact p { font-size: 1.3rem; opacity: 0.8; margin-bottom: 50px; }
+        .contact-btn {
+            background: white;
+            color: #1e3a5f;
+            padding: 20px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
             text-decoration: none;
-            font-size: 1.1rem;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .promptinator-banner a:hover { text-decoration: underline; }
+        .contact-btn:hover { transform: scale(1.05); box-shadow: 0 15px 50px rgba(255,255,255,0.2); }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            color: #666;
+            text-align: center;
+            padding: 40px 20px;
+        }
     </style>
 </head>
 <body>
-
-    <!-- Promptinator Banner -->
-    <div class="promptinator-banner">
-        ⚡ Neu: <a href="/promptinator.html">Promptinator – Optimiere deinen KI-Prompt für nur 0,99 €</a>
-    </div>
-
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="hero-content">
@@ -81,9 +251,9 @@
 
     <section class="pinned-section">
         <div class="pinned-content">
-            <div class="pinned-text">💡 Bessere Prompts = Bessere Ergebnisse</div>
-            <div class="pinned-text">📚 Ihr Wissen. Strukturiert. Nutzbar.</div>
-            <div class="pinned-text">🤖 Agenten, die wirklich arbeiten.</div>
+            <div class="pinned-text" data-index="0">💡 Bessere Prompts = Bessere Ergebnisse</div>
+            <div class="pinned-text" data-index="1">📚 Ihr Wissen. Strukturiert. Nutzbar.</div>
+            <div class="pinned-text" data-index="2">🤖 Agenten, die wirklich arbeiten.</div>
         </div>
     </section>
 
@@ -138,23 +308,69 @@
         <p>© 2026 agentier | Impressum | Datenschutz</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script>
         gsap.registerPlugin(ScrollTrigger);
+
+        // Hero animations
         gsap.to('.hero h1', { opacity: 1, y: 0, duration: 1, delay: 0.3 });
         gsap.to('.hero p', { opacity: 1, y: 0, duration: 1, delay: 0.5 });
         gsap.to('.cta-btn', { opacity: 1, y: 0, duration: 1, delay: 0.7 });
-        gsap.to('.hero-bg', { y: 200, scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+        // Hero parallax
+        gsap.to('.hero-bg', {
+            y: 200,
+            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+        });
+
+        // Pinned text sequence
         const pinnedTexts = document.querySelectorAll('.pinned-text');
         pinnedTexts.forEach((text, i) => {
-            gsap.to(text, { opacity: 1, scale: 1, scrollTrigger: { trigger: '.pinned-section', start: `${i * 33}% top`, end: `${(i + 1) * 33}% top`, scrub: true, toggleActions: 'play reverse play reverse' } });
-            gsap.to(text, { opacity: 0, scale: 1.2, scrollTrigger: { trigger: '.pinned-section', start: `${(i + 1) * 33 - 10}% top`, end: `${(i + 1) * 33}% top`, scrub: true } });
+            gsap.to(text, {
+                opacity: 1, scale: 1,
+                scrollTrigger: {
+                    trigger: '.pinned-section',
+                    start: `${i * 33}% top`,
+                    end: `${(i + 1) * 33}% top`,
+                    scrub: true,
+                    toggleActions: 'play reverse play reverse'
+                }
+            });
+            gsap.to(text, {
+                opacity: 0, scale: 1.2,
+                scrollTrigger: {
+                    trigger: '.pinned-section',
+                    start: `${(i + 1) * 33 - 10}% top`,
+                    end: `${(i + 1) * 33}% top`,
+                    scrub: true
+                }
+            });
         });
-        gsap.utils.toArray('.service-card').forEach((card) => {
-            gsap.to(card, { opacity: 1, y: 0, duration: 0.8, scrollTrigger: { trigger: card, start: 'top 80%' } });
+
+        // Service cards
+        gsap.utils.toArray('.service-card').forEach((card, i) => {
+            gsap.to(card, {
+                opacity: 1, y: 0, duration: 0.8,
+                scrollTrigger: { trigger: card, start: 'top 80%' }
+            });
         });
-        gsap.to('.parallax-bg', { y: -100, scrollTrigger: { trigger: '.parallax-section', start: 'top bottom', end: 'bottom top', scrub: true } });
-        gsap.to('.about-image', { opacity: 1, x: 0, rotation: 0, duration: 1, scrollTrigger: { trigger: '.about', start: 'top 60%' } });
-        gsap.to('.about-text', { opacity: 1, x: 0, duration: 1, delay: 0.2, scrollTrigger: { trigger: '.about', start: 'top 60%' } });
+
+        // Parallax image
+        gsap.to('.parallax-bg', {
+            y: -100,
+            scrollTrigger: { trigger: '.parallax-section', start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+
+        // About section
+        gsap.to('.about-image', {
+            opacity: 1, x: 0, rotation: 0, duration: 1,
+            scrollTrigger: { trigger: '.about', start: 'top 60%' }
+        });
+        gsap.to('.about-text', {
+            opacity: 1, x: 0, duration: 1, delay: 0.2,
+            scrollTrigger: { trigger: '.about', start: 'top 60%' }
+        });
     </script>
 </body>
 </html>
