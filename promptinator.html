@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promptinator - KI-Prompt Optimierung</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; connect-src https://promptinator-api.alexanderkunkel.workers.dev; frame-src https://js.stripe.com; style-src 'self' 'unsafe-inline';">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 40px; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .char-count { text-align: right; font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px; }
+        .char-count.warning { color: #f59e0b; }
+        .char-count.error { color: #ef4444; }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 5px;
+        }
+        textarea:focus { outline: none; border-color: #7c3aed; }
+        .price-tag {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .price { font-size: 1.5rem; font-weight: bold; color: #00d4ff; }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #7c3aed, #00d4ff);
+            color: #fff;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .result-card { margin-top: 30px; display: none; }
+        .result-card.show { display: block; }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .result-content {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        .copy-btn { padding: 8px 16px; font-size: 0.9rem; width: auto; }
+        .loader { display: none; text-align: center; padding: 40px; }
+        .loader.show { display: block; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .cancelled-msg {
+            text-align: center;
+            padding: 15px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .cancelled-msg.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>&#9889; Promptinator</h1>
+        <p class="subtitle">Optimiere deinen Prompt fuer maximale KI-Performance</p>
+
+        <div class="cancelled-msg" id="cancelledMsg">
+            Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.
+        </div>
+
+        <div class="card">
+            <label for="prompt">Dein Prompt:</label>
+            <textarea id="prompt" placeholder="Gib hier deinen Prompt ein, den du optimieren moechtest..." maxlength="5000" oninput="updateCharCount()"></textarea>
+            <div class="char-count" id="charCount">0 / 5000 Zeichen</div>
+
+            <div class="price-tag">
+                <span>Prompt-Optimierung mit Claude Opus 4.6</span>
+                <span class="price">0,99 &euro;</span>
+            </div>
+
+            <button id="payBtn" onclick="startPayment()">
+                &#128179; Bezahlen &amp; Optimieren
+            </button>
+        </div>
+
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p>Dein Prompt wird optimiert...</p>
+        </div>
+
+        <div class="card result-card" id="resultCard">
+            <div class="result-header">
+                <h3>&#10024; Optimierter Prompt</h3>
+                <button class="copy-btn" onclick="copyResult()">&#128203; Kopieren</button>
+            </div>
+            <div class="result-content" id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            CREATE_SESSION: 'https://promptinator-api.alexanderkunkel.workers.dev/create-session',
+            OPTIMIZE: 'https://promptinator-api.alexanderkunkel.workers.dev/optimize'
+        };
+
+        const MAX_PROMPT_LENGTH = 5000;
+
+        function updateCharCount() {
+            const len = document.getElementById('prompt').value.length;
+            const el = document.getElementById('charCount');
+            el.textContent = len + ' / ' + MAX_PROMPT_LENGTH + ' Zeichen';
+            el.className = 'char-count';
+            if (len > 4500) el.className = 'char-count warning';
+            if (len >= MAX_PROMPT_LENGTH) el.className = 'char-count error';
+        }
+
+        async function startPayment() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) { alert('Bitte gib einen Prompt ein.'); return; }
+            if (prompt.length > MAX_PROMPT_LENGTH) { alert('Prompt zu lang (max 5000 Zeichen).'); return; }
+
+            const btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.textContent = 'Weiterleitung zu Stripe...';
+
+            try {
+                // Prompt lokal speichern (ueberlebt Redirect)
+                localStorage.setItem('pendingPrompt', prompt);
+
+                // Checkout Session im Backend erstellen
+                const res = await fetch(CONFIG.CREATE_SESSION, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await res.json();
+
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Checkout konnte nicht erstellt werden');
+                }
+            } catch (err) {
+                alert('Fehler: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = '\uD83D\uDCB3 Bezahlen & Optimieren';
+            }
+        }
+
+        async function checkPaymentAndOptimize() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Abgebrochene Zahlung
+            if (params.get('cancelled') === 'true') {
+                document.getElementById('cancelledMsg').classList.add('show');
+                const prompt = localStorage.getItem('pendingPrompt');
+                if (prompt) document.getElementById('prompt').value = prompt;
+                window.history.replaceState({}, '', window.location.pathname);
+                return;
+            }
+
+            // Erfolgreiche Zahlung
+            const sessionId = params.get('session_id');
+            const prompt = localStorage.getItem('pendingPrompt');
+
+            if (sessionId && prompt) {
+                document.getElementById('prompt').value = prompt;
+                updateCharCount();
+                await optimizePrompt(prompt, sessionId);
+                localStorage.removeItem('pendingPrompt');
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+
+        async function optimizePrompt(prompt, sessionId) {
+            const btn = document.getElementById('payBtn');
+            const loader = document.getElementById('loader');
+            const resultCard = document.getElementById('resultCard');
+
+            btn.disabled = true;
+            loader.classList.add('show');
+            resultCard.classList.remove('show');
+
+            try {
+                const response = await fetch(CONFIG.OPTIMIZE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt, sessionId: sessionId })
+                });
+                const data = await response.json();
+
+                if (data.optimizedPrompt) {
+                    document.getElementById('resultContent').textContent = data.optimizedPrompt;
+                    resultCard.classList.add('show');
+                } else {
+                    throw new Error(data.error || 'Optimierung fehlgeschlagen');
+                }
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                loader.classList.remove('show');
+            }
+        }
+
+        function copyResult() {
+            const text = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Kopiert!';
+                setTimeout(function() { btn.textContent = '\uD83D\uDCCB Kopieren'; }, 2000);
+            });
+        }
+
+        // Beim Laden pruefen
+        checkPaymentAndOptimize();
+    </script>
+</body>
+</html>
