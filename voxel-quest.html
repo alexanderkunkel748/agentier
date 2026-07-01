@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>VOXEL QUEST — KI-Teaser</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0d1b2a; font-family:'Press Start 2P', monospace; touch-action:none; }
+  #game { position:fixed; inset:0; }
+  canvas { display:block; }
+
+  /* HUD */
+  #hud { position:fixed; inset:0; pointer-events:none; color:#fff; z-index:5; }
+  .topbar { position:absolute; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; align-items:flex-start; }
+  .panel { background:rgba(10,20,35,.55); border:2px solid rgba(255,255,255,.25); padding:8px 10px; border-radius:6px; font-size:10px; line-height:1.6; }
+  .barwrap { width:170px; height:14px; background:#222; border:2px solid #000; margin-top:5px; }
+  .barfill { height:100%; width:100%; transition:width .15s; }
+  #hpfill { background:linear-gradient(90deg,#ff4d4d,#ff8a3d); }
+  #bossbarwrap { position:absolute; top:14px; left:50%; transform:translateX(-50%); width:320px; max-width:60vw; display:none; text-align:center; }
+  #bossfill { background:linear-gradient(90deg,#b14dff,#ff4dd8); height:100%; width:100%; transition:width .15s; }
+  #cross { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:26px; height:26px; }
+  #cross::before, #cross::after { content:''; position:absolute; background:rgba(255,255,255,.85); box-shadow:0 0 4px #000; }
+  #cross::before { left:11px; top:0; width:4px; height:26px; }
+  #cross::after { top:11px; left:0; height:4px; width:26px; }
+  #scorePop { position:absolute; bottom:14px; left:14px; }
+  #soundBtn { position:absolute; bottom:14px; right:14px; pointer-events:auto; cursor:pointer; font-size:9px; }
+
+  /* Mobile controls */
+  #mobileUI { position:fixed; inset:0; z-index:6; pointer-events:none; display:none; }
+  #joy { position:absolute; left:24px; bottom:28px; width:130px; height:130px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.25); pointer-events:auto; }
+  #joyStick { position:absolute; left:50%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px; border-radius:50%;
+    background:rgba(255,255,255,.35); border:2px solid rgba(255,255,255,.5); }
+  #fireBtn { position:absolute; right:28px; bottom:34px; width:96px; height:96px; border-radius:50%;
+    background:rgba(255,120,80,.35); border:3px solid rgba(255,180,120,.7); color:#fff; font-family:inherit; font-size:11px;
+    pointer-events:auto; display:flex; align-items:center; justify-content:center; }
+  #fireBtn:active { background:rgba(255,120,80,.6); }
+  #lookHint { position:absolute; right:140px; bottom:60px; font-size:8px; color:rgba(255,255,255,.5); pointer-events:none; }
+
+  /* Overlays */
+  .overlay { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff;
+    background:radial-gradient(circle at 50% 30%, #1b3a5c, #0a1422 70%); padding:24px; overflow-y:auto; }
+  .overlay h1 { font-size:30px; line-height:1.4; margin-bottom:10px; color:#7fe3ff; text-shadow:3px 3px 0 #14324d; }
+  .overlay h2 { font-size:18px; color:#ffd35c; margin-bottom:18px; text-shadow:2px 2px 0 #5c4310; }
+  .overlay p { font-size:11px; line-height:2; max-width:580px; color:#cfe6ff; margin-bottom:10px; }
+  .btn { pointer-events:auto; cursor:pointer; font-family:inherit; font-size:13px; color:#0a1422; background:#ffd35c; border:none;
+    padding:16px 26px; border-radius:8px; margin-top:18px; box-shadow:0 6px 0 #b8902f; transition:transform .05s; }
+  .btn:active { transform:translateY(4px); box-shadow:0 2px 0 #b8902f; }
+  .controls { background:rgba(10,25,45,.6); border:2px solid rgba(127,227,255,.3); border-radius:8px; padding:16px 18px; margin-top:14px; max-width:560px; }
+  .controls .row { display:flex; justify-content:space-between; gap:14px; font-size:10px; line-height:2.1; color:#cfe6ff; }
+  .controls .row span:first-child { color:#7fe3ff; }
+  .ctitle { font-size:11px; color:#ffd35c; margin-bottom:8px; }
+  .keys { font-size:9px; color:#8fb6d6; margin-top:22px; line-height:2; }
+  .small { font-size:9px; color:#9fd0ff; }
+  .tag { color:#7fffa0; }
+  .scoreLine { font-size:12px; color:#ffd35c; margin:8px 0; }
+  .hidden { display:none !important; }
+  #flash { position:fixed; inset:0; background:#ff0000; opacity:0; pointer-events:none; z-index:8; transition:opacity .1s; }
+</style>
+</head>
+<body>
+<div id="game"></div>
+
+<div id="hud" class="hidden">
+  <div class="topbar">
+    <div class="panel">
+      <div>❤ LEBEN</div>
+      <div class="barwrap"><div id="hpfill" class="barfill"></div></div>
+      <div style="margin-top:6px;">PUNKTE: <span id="score">0</span></div>
+    </div>
+    <div class="panel" style="text-align:right;">
+      <div id="levelName">LEVEL 1</div>
+      <div>GEGNER: <span id="enemyCount">0</span></div>
+      <div>ZEIT: <span id="timer">60</span>s</div>
+    </div>
+  </div>
+  <div id="bossbarwrap">
+    <div class="panel" style="padding:6px;">
+      <div id="bossName" style="font-size:10px;color:#ff9cf0;">ENDGEGNER</div>
+      <div class="barwrap" style="width:100%;"><div id="bossfill" class="barfill"></div></div>
+    </div>
+  </div>
+  <div id="cross"></div>
+  <div id="soundBtn" class="panel">🔊 TON</div>
+</div>
+
+<!-- Mobile controls -->
+<div id="mobileUI">
+  <div id="joy"><div id="joyStick"></div></div>
+  <div id="lookHint">rechts wischen<br>= umsehen</div>
+  <div id="fireBtn">FEUER</div>
+</div>
+
+<div id="flash"></div>
+
+<!-- START -->
+<div id="startScreen" class="overlay">
+  <h1>VOXEL QUEST</h1>
+  <h2>Ein KI-gebauter Teaser</h2>
+  <p>Zwei Welten. Zwei Endgegner. <span class="tag">~60 Sekunden</span> pro Level.<br>
+  Räum die Schleimwürfel ab und leg dich mit dem Boss an.</p>
+  <p class="small">Dieses Mini-Game wurde komplett per KI &amp; Prompting gebaut.<br>Genau das könnt ihr auch. 🛠️</p>
+  <div id="hsStart" class="scoreLine"></div>
+  <button class="btn" id="startBtn">SPIEL STARTEN</button>
+</div>
+
+<!-- LEVEL INTRO -->
+<div id="introScreen" class="overlay hidden">
+  <h1 id="introTitle">LEVEL 1</h1>
+  <h2 id="introSub">Die Grasebene</h2>
+  <p id="introText"></p>
+  <div class="controls">
+    <div class="ctitle" id="ctrlTitle">⌨️ STEUERUNG (PC)</div>
+    <div id="ctrlBody"></div>
+  </div>
+  <button class="btn" id="introBtn">LOS GEHT'S</button>
+</div>
+
+<!-- END / GAME OVER -->
+<div id="endScreen" class="overlay hidden">
+  <h1 id="endTitle">GESCHAFFT!</h1>
+  <p id="endText"></p>
+  <div id="endScore" class="scoreLine"></div>
+  <p class="small">Lust bekommen, sowas selbst zu bauen?<br>Schnapp dir eine KI und beschreib ihr dein Spiel. 🎮</p>
+  <button class="btn" id="endBtn">NOCHMAL SPIELEN</button>
+</div>
+
+<script type="module">
+import * as THREE from "https://esm.sh/three@0.169.0";
+
+// ---------- Detect touch ----------
+const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints>0;
+
+// ---------- Setup ----------
+const container = document.getElementById('game');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 300);
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+container.appendChild(renderer.domElement);
+addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+
+// HUD refs
+const hud=document.getElementById('hud'), hpfill=document.getElementById('hpfill');
+const enemyCountEl=document.getElementById('enemyCount'), timerEl=document.getElementById('timer'), levelNameEl=document.getElementById('levelName');
+const bossbar=document.getElementById('bossbarwrap'), bossfill=document.getElementById('bossfill'), bossNameEl=document.getElementById('bossName');
+const flash=document.getElementById('flash'), scoreEl=document.getElementById('score');
+
+// ================= AUDIO (WebAudio, keine Dateien) =================
+let actx=null, masterGain=null, soundOn=true;
+function initAudio(){
+  if(actx) return;
+  try{ actx=new (window.AudioContext||window.webkitAudioContext)(); masterGain=actx.createGain(); masterGain.gain.value=0.5; masterGain.connect(actx.destination); }catch(e){}
+}
+function tone(freq, dur, type='square', vol=0.3, slideTo=null){
+  if(!actx||!soundOn) return;
+  const o=actx.createOscillator(), g=actx.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq, actx.currentTime);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, actx.currentTime+dur);
+  g.gain.setValueAtTime(vol, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+dur);
+  o.connect(g); g.connect(masterGain); o.start(); o.stop(actx.currentTime+dur);
+}
+function noise(dur, vol=0.3){
+  if(!actx||!soundOn) return;
+  const sr=actx.sampleRate, buf=actx.createBuffer(1, sr*dur, sr), d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const src=actx.createBufferSource(); src.buffer=buf;
+  const g=actx.createGain(); g.gain.value=vol; src.connect(g); g.connect(masterGain); src.start();
+}
+const sfx={
+  shoot:()=>tone(700,0.08,'square',0.18,180),
+  hit:()=>tone(300,0.06,'square',0.2,500),
+  kill:()=>{tone(440,0.1,'square',0.25,880); setTimeout(()=>tone(660,0.1,'square',0.2),60);},
+  hurt:()=>{noise(0.18,0.35); tone(160,0.18,'sawtooth',0.25,80);},
+  boss:()=>{tone(110,0.5,'sawtooth',0.35,55); setTimeout(()=>tone(90,0.6,'sawtooth',0.3,45),200);},
+  win:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.18,'square',0.3),i*120));},
+  lose:()=>{[330,247,165].forEach((f,i)=>setTimeout(()=>tone(f,0.3,'sawtooth',0.3,f*0.6),i*180));}
+};
+const soundBtn=document.getElementById('soundBtn');
+soundBtn.onclick=(e)=>{ e.stopPropagation(); soundOn=!soundOn; soundBtn.textContent=soundOn?'🔊 TON':'🔇 TON'; };
+
+// ---------- Level themes ----------
+const LEVELS = [
+  { name:"LEVEL 1", sub:"Die Grasebene", sky:0x8fd3ff, ground:0x57a64a, ground2:0x4a8f3e,
+    fog:0xaadfff, mob:0x6fd66f, bossColor:0x2e8b57, bossName:"SCHLEIMKÖNIG",
+    text:"Grüne Hügel, fiese Schleimwürfel. Ballere dich durch und finde den SCHLEIMKÖNIG." },
+  { name:"LEVEL 2", sub:"Die Lava-Höhle", sky:0x1a0b14, ground:0x3a2433, ground2:0x2a1825,
+    fog:0x551122, mob:0xff7a3d, bossColor:0xff3b2f, bossName:"MAGMA-TITAN",
+    text:"Es wird heiß. In der Tiefe lauert der MAGMA-TITAN. Bleib in Bewegung!" }
+];
+
+// ---------- Game state ----------
+let state='start', levelIdx=0, hp=100, enemies=[], bullets=[], boss=null, level, timeLeft=60, lastTime=0, animId;
+let bossActive=false, score=0, highscore=0;
+const keys={};
+let yaw=0, pitch=0, locked=false;
+const player={ pos:new THREE.Vector3(0,1.6,0), vel:new THREE.Vector3() };
+const WORLD=44;
+
+// ---------- Lights ----------
+const hemi=new THREE.HemisphereLight(0xffffff,0x444444,0.9); scene.add(hemi);
+const dir=new THREE.DirectionalLight(0xffffff,0.7); dir.position.set(20,40,10); scene.add(dir);
+const boxGeo=new THREE.BoxGeometry(1,1,1);
+let worldGroup=new THREE.Group(); scene.add(worldGroup);
+
+function buildWorld(){
+  scene.remove(worldGroup);
+  worldGroup=new THREE.Group(); scene.add(worldGroup);
+  scene.background=new THREE.Color(level.sky);
+  scene.fog=new THREE.Fog(level.fog, 25, 110);
+  hemi.color.set(level.sky);
+  const tile=4, n=Math.ceil(WORLD*2/tile);
+  const c1=new THREE.MeshLambertMaterial({color:level.ground});
+  const c2=new THREE.MeshLambertMaterial({color:level.ground2});
+  const tileGeo=new THREE.BoxGeometry(tile,1,tile);
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+    const m=new THREE.Mesh(tileGeo,(i+j)%2?c1:c2);
+    m.position.set(-WORLD+tile/2+i*tile,-0.5,-WORLD+tile/2+j*tile);
+    worldGroup.add(m);
+  }
+  const wallMat=new THREE.MeshLambertMaterial({color:levelIdx===0?0x7a5a3a:0x2a1a22});
+  for(let x=-WORLD;x<=WORLD;x+=1){
+    for(let h=0;h<4;h++){
+      addCube(x,h+0.5,-WORLD,wallMat); addCube(x,h+0.5,WORLD,wallMat);
+      addCube(-WORLD,h+0.5,x,wallMat); addCube(WORLD,h+0.5,x,wallMat);
+    }
+  }
+  const deco = levelIdx===0 ? {trunk:0x6b4a2a, top:0x2f7d32, count:18} : {trunk:0x401018, top:0xff5522, count:22};
+  for(let i=0;i<deco.count;i++){
+    const x=(Math.random()*2-1)*(WORLD-6), z=(Math.random()*2-1)*(WORLD-6);
+    if(Math.hypot(x,z)<6) continue;
+    if(levelIdx===0){
+      const tm=new THREE.MeshLambertMaterial({color:deco.trunk});
+      addCube(x,0.5,z,tm); addCube(x,1.5,z,tm);
+      const lm=new THREE.MeshLambertMaterial({color:deco.top});
+      for(let dx=-1;dx<=1;dx++)for(let dz=-1;dz<=1;dz++) addCube(x+dx,2.5,z+dz,lm);
+      addCube(x,3.5,z,lm);
+    } else {
+      const lava=new THREE.MeshBasicMaterial({color:0xff6622});
+      addCube(x,0.05,z,lava); addCube(x+1,0.05,z,lava); addCube(x,0.05,z+1,lava);
+      const rock=new THREE.MeshLambertMaterial({color:0x33222a});
+      addCube(x-2,0.5,z-2,rock); addCube(x-2,1.5,z-2,rock);
+    }
+  }
+}
+function addCube(x,y,z,mat){ const m=new THREE.Mesh(boxGeo,mat); m.position.set(x,y,z); worldGroup.add(m); return m; }
+
+// ---------- Enemies ----------
+function makeEnemy(x,z,opts={}){
+  const g=new THREE.Group();
+  const size=opts.size||1;
+  const body=new THREE.Mesh(boxGeo,new THREE.MeshLambertMaterial({color:opts.color||level.mob}));
+  body.scale.set(size,size,size); body.position.y=size/2; g.add(body);
+  const eyeMat=new THREE.MeshBasicMaterial({color:0x000000});
+  const e1=new THREE.Mesh(boxGeo,eyeMat); e1.scale.set(0.15*size,0.15*size,0.05); e1.position.set(0.22*size,size*0.65,size/2); g.add(e1);
+  const e2=e1.clone(); e2.position.x=-0.22*size; g.add(e2);
+  g.position.set(x,0,z);
+  g.userData={ hp:opts.hp||3, maxhp:opts.hp||3, speed:opts.speed||2.4, isBoss:!!opts.isBoss, size, hitT:0, jump:Math.random()*3 };
+  scene.add(g);
+  return g;
+}
+function spawnLevel(){
+  enemies=[]; bullets.forEach(b=>scene.remove(b.mesh)); bullets=[]; boss=null; bossActive=false; bossbar.style.display='none';
+  hp=100; updateHP();
+  player.pos.set(0,1.6,0); player.vel.set(0,0,0); yaw=0; pitch=0;
+  const count = levelIdx===0?7:9;
+  for(let i=0;i<count;i++){
+    const a=Math.random()*Math.PI*2, r=14+Math.random()*22;
+    enemies.push(makeEnemy(Math.cos(a)*r, Math.sin(a)*r, {hp:levelIdx===0?3:4, speed:2.2+levelIdx*0.6}));
+  }
+  timeLeft=60; updateEnemyCount();
+}
+function spawnBoss(){
+  bossActive=true; sfx.boss();
+  const a=Math.random()*Math.PI*2;
+  boss=makeEnemy(Math.cos(a)*20, Math.sin(a)*20, {
+    isBoss:true, size:3.2, color:level.bossColor,
+    hp:levelIdx===0?40:60, speed:levelIdx===0?2.6:3.2
+  });
+  enemies.push(boss);
+  bossNameEl.textContent=level.bossName; bossbar.style.display='block'; updateBossBar();
+}
+
+// ---------- Shooting ----------
+function shoot(){
+  if(state!=='play') return;
+  if(!isTouch && !locked) return;
+  sfx.shoot();
+  const dirv=new THREE.Vector3(); camera.getWorldDirection(dirv);
+  const b={ mesh:new THREE.Mesh(new THREE.SphereGeometry(0.12,6,6), new THREE.MeshBasicMaterial({color:0xfff36b})),
+    vel:dirv.clone().multiplyScalar(60), life:1.4 };
+  b.mesh.position.copy(camera.position).add(dirv.clone().multiplyScalar(0.6));
+  scene.add(b.mesh); bullets.push(b);
+}
+
+// ---------- HUD ----------
+function updateHP(){ hpfill.style.width=Math.max(0,hp)+'%'; }
+function updateEnemyCount(){ const n=enemies.filter(e=>!e.userData.isBoss).length; enemyCountEl.textContent=bossActive?'BOSS':n; }
+function updateBossBar(){ if(boss) bossfill.style.width=(100*Math.max(0,boss.userData.hp)/boss.userData.maxhp)+'%'; }
+function addScore(n){ score+=n; scoreEl.textContent=score; }
+function hurt(d){ hp-=d; updateHP(); sfx.hurt(); flash.style.opacity=.5; setTimeout(()=>flash.style.opacity=0,90); if(hp<=0) gameOver(); }
+
+// ---------- Input: desktop ----------
+renderer.domElement.addEventListener('click', ()=>{ if(state!=='play')return; if(!isTouch && !locked) renderer.domElement.requestPointerLock(); else if(!isTouch) shoot(); });
+document.addEventListener('pointerlockchange', ()=>{ locked=document.pointerLockElement===renderer.domElement; });
+document.addEventListener('mousemove', e=>{ if(!locked) return; yaw-=e.movementX*0.0022; pitch-=e.movementY*0.0022; pitch=Math.max(-1.3,Math.min(1.3,pitch)); });
+addEventListener('keydown', e=>{ keys[e.code]=true; });
+addEventListener('keyup', e=>{ keys[e.code]=false; });
+
+// ---------- Input: mobile ----------
+const mobileUI=document.getElementById('mobileUI');
+const joy=document.getElementById('joy'), joyStick=document.getElementById('joyStick'), fireBtn=document.getElementById('fireBtn');
+let moveVec={x:0,y:0}, joyId=null, joyCenter={x:0,y:0};
+let lookId=null, lastLook={x:0,y:0};
+let fireHeld=false, fireTimer=0;
+
+if(isTouch){
+  joy.addEventListener('touchstart',e=>{ const t=e.changedTouches[0]; joyId=t.identifier; const r=joy.getBoundingClientRect(); joyCenter={x:r.left+r.width/2,y:r.top+r.height/2}; e.preventDefault(); },{passive:false});
+  addEventListener('touchmove',e=>{
+    for(const t of e.changedTouches){
+      if(t.identifier===joyId){
+        let dx=t.clientX-joyCenter.x, dy=t.clientY-joyCenter.y;
+        const max=50, d=Math.hypot(dx,dy);
+        if(d>max){ dx*=max/d; dy*=max/d; }
+        joyStick.style.transform=`translate(${dx}px,${dy}px)`;
+        moveVec={x:dx/max,y:dy/max};
+      } else if(t.identifier===lookId){
+        yaw-=(t.clientX-lastLook.x)*0.005; pitch-=(t.clientY-lastLook.y)*0.005;
+        pitch=Math.max(-1.3,Math.min(1.3,pitch)); lastLook={x:t.clientX,y:t.clientY};
+      }
+    }
+  },{passive:false});
+  addEventListener('touchend',e=>{
+    for(const t of e.changedTouches){
+      if(t.identifier===joyId){ joyId=null; moveVec={x:0,y:0}; joyStick.style.transform='translate(0,0)'; }
+      if(t.identifier===lookId){ lookId=null; }
+    }
+  });
+  // look: any touch on right half not on controls
+  renderer.domElement.addEventListener('touchstart',e=>{
+    for(const t of e.changedTouches){ if(t.clientX>innerWidth*0.4 && lookId===null){ lookId=t.identifier; lastLook={x:t.clientX,y:t.clientY}; } }
+  },{passive:false});
+  fireBtn.addEventListener('touchstart',e=>{ fireHeld=true; e.preventDefault(); },{passive:false});
+  fireBtn.addEventListener('touchend',e=>{ fireHeld=false; e.preventDefault(); },{passive:false});
+}
+
+// ---------- Loop ----------
+function loop(t){
+  animId=requestAnimationFrame(loop);
+  const dt=Math.min(0.05,(t-lastTime)/1000||0); lastTime=t;
+  if(state==='play') update(dt);
+  renderer.render(scene,camera);
+}
+function update(dt){
+  if(!bossActive){
+    timeLeft-=dt; timerEl.textContent=Math.max(0,Math.ceil(timeLeft));
+    const mobsLeft=enemies.filter(e=>!e.userData.isBoss).length;
+    if(timeLeft<=0 || mobsLeft===0){ spawnBoss(); }
+  }
+  // auto-fire on mobile hold
+  if(fireHeld){ fireTimer-=dt; if(fireTimer<=0){ shoot(); fireTimer=0.18; } }
+
+  const sprint=(keys['ShiftLeft']||keys['ShiftRight'])?8.5:5;
+  const spd=sprint*dt;
+  const fwd=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
+  const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
+  const mv=new THREE.Vector3();
+  if(keys['KeyW'])mv.add(fwd); if(keys['KeyS'])mv.sub(fwd);
+  if(keys['KeyD'])mv.add(right); if(keys['KeyA'])mv.sub(right);
+  // mobile joystick
+  if(isTouch){ mv.add(fwd.clone().multiplyScalar(-moveVec.y)); mv.add(right.clone().multiplyScalar(moveVec.x)); }
+  if(mv.lengthSq()>0){ mv.normalize().multiplyScalar(spd); player.pos.add(mv); }
+  const lim=WORLD-2;
+  player.pos.x=Math.max(-lim,Math.min(lim,player.pos.x));
+  player.pos.z=Math.max(-lim,Math.min(lim,player.pos.z));
+
+  camera.position.copy(player.pos);
+  camera.rotation.set(0,0,0,'YXZ'); camera.rotateY(yaw); camera.rotateX(pitch);
+
+  for(let i=bullets.length-1;i>=0;i--){
+    const b=bullets[i];
+    b.mesh.position.add(b.vel.clone().multiplyScalar(dt));
+    b.life-=dt; let hit=false;
+    for(const e of enemies){
+      const d=b.mesh.position.distanceTo(e.position.clone().setY(e.userData.size/2));
+      if(d < e.userData.size*0.7){
+        e.userData.hp-=1; e.userData.hitT=0.12; hit=true; sfx.hit();
+        if(e.userData.isBoss) updateBossBar();
+        if(e.userData.hp<=0) killEnemy(e); break;
+      }
+    }
+    if(hit||b.life<=0||Math.abs(b.mesh.position.x)>WORLD||Math.abs(b.mesh.position.z)>WORLD){ scene.remove(b.mesh); bullets.splice(i,1); }
+  }
+  for(const e of enemies){
+    const ud=e.userData;
+    const to=player.pos.clone().setY(0).sub(e.position.clone().setY(0));
+    const dist=to.length(); to.normalize();
+    e.position.add(to.multiplyScalar(ud.speed*dt));
+    e.rotation.y=Math.atan2(to.x,to.z);
+    ud.jump+=dt*6; e.position.y=Math.abs(Math.sin(ud.jump))*0.25*ud.size;
+    if(ud.hitT>0){ ud.hitT-=dt; e.children[0].material.emissive=new THREE.Color(0xffffff); e.children[0].material.emissiveIntensity=0.6; }
+    else { e.children[0].material.emissive=new THREE.Color(0x000000); }
+    if(dist < ud.size*0.6+0.8){ if(!ud.dmgCd||ud.dmgCd<=0){ hurt(ud.isBoss?14:7); ud.dmgCd=0.8; } }
+    if(ud.dmgCd>0) ud.dmgCd-=dt;
+  }
+}
+function killEnemy(e){
+  sfx.kill();
+  scene.remove(e); enemies=enemies.filter(x=>x!==e);
+  if(e.userData.isBoss){ addScore(500); levelComplete(); return; }
+  addScore(100); updateEnemyCount();
+}
+
+// ---------- Flow ----------
+function startGame(){ levelIdx=0; score=0; scoreEl.textContent=0; showIntro(); }
+function showIntro(){
+  level=LEVELS[levelIdx];
+  document.getElementById('introTitle').textContent=level.name;
+  document.getElementById('introSub').textContent=level.sub;
+  document.getElementById('introText').textContent=level.text;
+  // controls text depends on device
+  const ct=document.getElementById('ctrlTitle'), cb=document.getElementById('ctrlBody');
+  if(isTouch){
+    ct.textContent='📱 STEUERUNG (HANDY)';
+    cb.innerHTML=`
+      <div class="row"><span>Joystick (links)</span><span>Bewegen</span></div>
+      <div class="row"><span>Wischen (rechts)</span><span>Umsehen / Zielen</span></div>
+      <div class="row"><span>FEUER-Button</span><span>Schießen (halten = Dauerfeuer)</span></div>
+      <div class="row"><span>🔊 oben rechts</span><span>Ton an/aus</span></div>`;
+  } else {
+    ct.textContent='⌨️ STEUERUNG (PC)';
+    cb.innerHTML=`
+      <div class="row"><span>W A S D</span><span>Bewegen</span></div>
+      <div class="row"><span>Maus</span><span>Umsehen / Zielen</span></div>
+      <div class="row"><span>Linksklick</span><span>Schießen</span></div>
+      <div class="row"><span>Shift</span><span>Sprinten</span></div>
+      <div class="row"><span>🔊 unten rechts</span><span>Ton an/aus</span></div>
+      <div class="row"><span></span><span style="color:#7fffa0">Klick ins Bild = Maus einrasten</span></div>`;
+  }
+  show('introScreen'); state='intro';
+}
+function beginLevel(){
+  initAudio();
+  level=LEVELS[levelIdx];
+  levelNameEl.textContent=level.name;
+  buildWorld(); spawnLevel();
+  hide('introScreen'); hud.classList.remove('hidden');
+  if(isTouch) mobileUI.style.display='block';
+  state='play';
+  if(!isTouch) renderer.domElement.requestPointerLock();
+}
+function endHighscore(){ if(score>highscore) highscore=score; }
+function levelComplete(){
+  state='done'; sfx.win(); document.exitPointerLock?.(); mobileUI.style.display='none';
+  if(levelIdx<LEVELS.length-1){
+    levelIdx++;
+    document.getElementById('endTitle').textContent='BOSS BESIEGT!';
+    document.getElementById('endText').innerHTML=`Du hast den <b>${level.bossName}</b> erledigt!<br>Bereit für ${LEVELS[levelIdx].name}: ${LEVELS[levelIdx].sub}?`;
+    document.getElementById('endScore').textContent=`PUNKTE: ${score}`;
+    document.getElementById('endBtn').textContent='WEITER →';
+    show('endScreen'); hud.classList.add('hidden'); nextAction='next';
+  } else {
+    endHighscore();
+    document.getElementById('endTitle').textContent='DURCHGESPIELT! 🏆';
+    document.getElementById('endText').innerHTML=`Beide Bosse erledigt. Stark gespielt!<br>Das war nur ein <b>Teaser</b> — und komplett per KI gebaut.`;
+    document.getElementById('endScore').innerHTML=`PUNKTE: ${score} &nbsp;|&nbsp; BESTE: ${highscore}`;
+    document.getElementById('endBtn').textContent='NOCHMAL';
+    show('endScreen'); hud.classList.add('hidden'); nextAction='restart';
+  }
+}
+function gameOver(){
+  state='done'; sfx.lose(); endHighscore(); document.exitPointerLock?.(); mobileUI.style.display='none';
+  document.getElementById('endTitle').textContent='GAME OVER';
+  document.getElementById('endText').innerHTML='Die Würfel haben dich erwischt!<br>Versuch es nochmal.';
+  document.getElementById('endScore').innerHTML=`PUNKTE: ${score} &nbsp;|&nbsp; BESTE: ${highscore}`;
+  document.getElementById('endBtn').textContent='NOCHMAL';
+  show('endScreen'); hud.classList.add('hidden'); nextAction='retry';
+}
+let nextAction='next';
+function show(id){ document.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+
+function refreshStartHS(){ document.getElementById('hsStart').textContent = highscore>0 ? `BESTE PUNKTZAHL: ${highscore}` : ''; }
+
+document.getElementById('startBtn').onclick=()=>{ initAudio(); hide('startScreen'); startGame(); };
+document.getElementById('introBtn').onclick=()=> beginLevel();
+document.getElementById('endBtn').onclick=()=>{
+  refreshStartHS();
+  if(nextAction==='next') showIntro();
+  else if(nextAction==='retry') showIntro();
+  else { levelIdx=0; score=0; scoreEl.textContent=0; showIntro(); }
+};
+
+lastTime=performance.now();
+loop(performance.now());
+</script>
+</body>
+</html>
