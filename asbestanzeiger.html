@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asbestanzeige v11 – Cavier & Sohn Bedachungen GmbH</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&display=swap');
+
+    :root {
+      --rot: #c0392b;
+      --dunkelrot: #922b21;
+      --grau: #2c3e50;
+      --hellgrau: #ecf0f1;
+      --mittelgrau: #bdc3c7;
+      --weiss: #ffffff;
+      --akzent: #e74c3c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--grau);
+      color: var(--weiss);
+      padding: 0;
+      display: flex;
+      align-items: stretch;
+      border-bottom: 4px solid var(--rot);
+    }
+    .header-logo {
+      background: var(--rot);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 28px;
+      min-width: 160px;
+    }
+    .logo-seit {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.75);
+      text-transform: uppercase;
+    }
+    .logo-firma {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--weiss);
+      line-height: 1.1;
+      text-align: center;
+    }
+    .logo-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 1px;
+      margin-top: 3px;
+      text-align: center;
+    }
+    .header-title {
+      padding: 18px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .header-title h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--weiss);
+    }
+    .header-title p {
+      font-size: 12px;
+      color: var(--mittelgrau);
+      margin-top: 4px;
+    }
+    .header-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      padding: 18px 28px;
+    }
+    .badge {
+      background: var(--rot);
+      color: white;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 960px;
+      margin: 30px auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ── HINWEIS-BOX ── */
+    .hinweis {
+      background: #fff3cd;
+      border-left: 5px solid #f39c12;
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #7d6608;
+    }
+    .hinweis strong { color: #6e5200; }
+
+    /* ── FRIST-STATUS & VALIDIERUNG (v11) ── */
+    #frist-status { border-radius: 4px; padding: 12px 18px; margin: 0 0 24px; font-size: 13px; border-left: 5px solid #ccc; }
+    #frist-status.frist-ok { background: #eafaf1; border-left-color: #27ae60; color: #1e8449; }
+    #frist-status.frist-warn { background: #fdecea; border-left-color: #c0392b; color: #922b21; }
+    .feld-fehler { border-color: var(--rot) !important; background: #fdf0ef !important; }
+    .check-grid.feld-fehler { border: 1.5px solid var(--rot); border-radius: 4px; padding: 6px; }
+    #autosave-info { margin-right: auto; align-self: center; font-size: 12px; color: #888; }
+
+    /* ── SECTION CARDS ── */
+    .card {
+      background: var(--weiss);
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: var(--grau);
+      color: var(--weiss);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-header.rot { background: var(--rot); }
+    .card-header h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .card-header .num {
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .card-body { padding: 20px; }
+
+    /* ── FORM ELEMENTS ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-grid.full { grid-template-columns: 1fr; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field.span2 { grid-column: span 2; }
+    .field.span3 { grid-column: span 3; }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--grau);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    label .req { color: var(--rot); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      border: 1.5px solid #ddd;
+      border-radius: 4px;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-family: 'Open Sans', sans-serif;
+      color: #333;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--rot);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.12);
+      background: #fff;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+
+    /* ── PREFILLED (read-only) ── */
+    .prefilled {
+      background: #f0f4f8 !important;
+      color: #555 !important;
+      border-color: #ccc !important;
+      cursor: default;
+    }
+
+    /* ── MITARBEITER TABLE ── */
+    .ma-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .ma-table th {
+      background: var(--hellgrau);
+      color: var(--grau);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 2px solid var(--mittelgrau);
+    }
+    .ma-table td { padding: 7px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .ma-table tr:last-child td { border-bottom: none; }
+    .ma-table input, .ma-table select { font-size: 13px; padding: 6px 8px; }
+    .ma-table .tag {
+      display: inline-block;
+      background: #d5f5e3;
+      color: #1e8449;
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .ma-table .tag.warn { background: #fdebd0; color: #d35400; }
+
+    .btn-add {
+      margin-top: 12px;
+      background: transparent;
+      border: 1.5px dashed var(--rot);
+      color: var(--rot);
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Open Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .btn-add:hover { background: #fdf0ef; }
+
+    .btn-del {
+      background: transparent;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      transition: color 0.2s;
+    }
+    .btn-del:hover { color: var(--rot); }
+
+    /* ── CHECKBOXEN ── */
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 7px 10px;
+      border-radius: 4px;
+      border: 1.5px solid #e0e0e0;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .check-item:hover { border-color: var(--rot); background: #fdf0ef; }
+    .check-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--rot);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── UNTERSCHRIFT ── */
+    .sig-box {
+      border: 1.5px solid #ddd;
+      border-radius: 4px;
+      height: 90px;
+      background: #fafafa;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 12px;
+      color: #bbb;
+      font-size: 12px;
+    }
+
+    /* ── BUTTONS ── */
+    .action-bar {
+      display: flex;
+      gap: 14px;
+      justify-content: flex-end;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Open Sans', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .btn-primary {
+      background: var(--rot);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--dunkelrot); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
+    .btn-secondary {
+      background: var(--grau);
+      color: white;
+    }
+    .btn-secondary:hover { background: #1a252f; }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--grau);
+      color: var(--grau);
+    }
+    .btn-outline:hover { background: var(--hellgrau); }
+    .btn-packlist {
+      background: #1a6b3c;
+      color: white;
+    }
+    .btn-packlist:hover { background: #145230; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,107,60,0.3); }
+
+    /* ── PRINT PREVIEW ── */
+    #preview-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 30px 16px;
+    }
+    #preview-overlay.active { display: block; }
+    #preview-box {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+    .preview-header {
+      background: var(--grau);
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preview-header h3 { font-family: 'Oswald', sans-serif; font-size: 18px; }
+    .preview-actions { display: flex; gap: 10px; }
+    .preview-content { padding: 32px 40px; font-size: 13px; line-height: 1.6; }
+
+    /* ── PRINT DOCUMENT ── */
+    .doc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 3px solid var(--rot); padding-bottom: 16px; }
+    .doc-logo-block .doc-firma { font-family: 'Oswald', sans-serif; font-size: 20px; color: var(--rot); font-weight: 700; }
+    .doc-logo-block .doc-adresse { font-size: 11px; color: #666; margin-top: 3px; }
+    .doc-meta { text-align: right; font-size: 11px; color: #666; }
+    .doc-meta .doc-nr { font-size: 16px; font-weight: 700; color: var(--grau); font-family: 'Oswald', sans-serif; }
+    .doc-title { text-align: center; margin: 18px 0 22px; }
+    .doc-title h2 { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--grau); letter-spacing: 1px; }
+    .doc-title p { font-size: 11px; color: #888; margin-top: 4px; }
+    .doc-section { margin-bottom: 16px; }
+    .doc-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--rot); border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 10px; }
+    .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; font-size: 12px; }
+    .doc-grid .dl { color: #888; }
+    .doc-grid .dd { font-weight: 600; color: #333; }
+    .doc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+    .doc-table th { background: var(--hellgrau); padding: 5px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .doc-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+    .doc-sig { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 24px; }
+    .doc-sig-field { border-top: 1.5px solid #333; padding-top: 6px; font-size: 11px; color: #666; }
+    .doc-footer { margin-top: 24px; border-top: 1px solid #ddd; padding-top: 10px; font-size: 10px; color: #aaa; text-align: center; }
+    .warn-box { background: #fdecea; border: 1px solid #f5c6cb; border-radius: 4px; padding: 8px 12px; font-size: 11px; color: #922b21; margin-bottom: 14px; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 30px; right: 30px;
+      background: #27ae60;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 2000;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+      .field.span2, .field.span3 { grid-column: span 1; }
+      .check-grid { grid-template-columns: 1fr; }
+      header { flex-wrap: wrap; }
+      .header-badge { margin-left: 0; padding-top: 0; }
+    }
+
+    @media print {
+      body { background: white; }
+      header, .container > *:not(#print-area) { display: none !important; }
+      #print-area { display: block !important; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ HEADER -->
+<header>
+  <div class="header-logo">
+    <span class="logo-seit">Seit 1891</span>
+    <div class="logo-firma">Cavier<br>&amp; Sohn</div>
+    <div class="logo-sub">Bedachungen GmbH</div>
+  </div>
+  <div class="header-title">
+    <h1>⚠ Asbestanzeige</h1>
+    <p>Baustellenbezogene Anzeige gemäß § 41 GefStoffV i.V.m. TRGS 519</p>
+  </div>
+  <div class="header-badge">
+    <span class="badge">Gefahrstoff</span>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════ MAIN -->
+<div class="container">
+
+  <div class="hinweis">
+    <strong>Rechtlicher Hinweis:</strong> Asbestarbeiten sind gemäß § 41 GefStoffV i.V.m. TRGS 519 mindestens
+    <strong>7 Werktage vor Beginn</strong> bei der zuständigen Behörde (Amt für Arbeitsschutz) anzuzeigen.
+    Alle Felder mit <span style="color:var(--rot)">*</span> sind Pflichtfelder.
+  </div>
+
+  <div id="frist-status" style="display:none;"></div>
+
+  <!-- ── 1. ARBEITGEBER -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">1</span>
+      <h2>Angaben zum Arbeitgeber / Auftragnehmer</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Firma <span class="req">*</span></label>
+          <input type="text" id="ag_firma" class="prefilled" value="Cavier & Sohn Bedachungen GmbH" readonly />
+        </div>
+        <div class="field">
+          <label>Straße / Hausnummer <span class="req">*</span></label>
+          <input type="text" id="ag_strasse" class="prefilled" value="Zeißstraße 2" readonly />
+        </div>
+        <div class="field">
+          <label>PLZ / Ort <span class="req">*</span></label>
+          <input type="text" id="ag_ort" class="prefilled" value="23560 Lübeck" readonly />
+        </div>
+        <div class="field">
+          <label>Telefon</label>
+          <input type="tel" id="ag_tel" class="prefilled" value="0451 580 530" readonly />
+        </div>
+        <div class="field">
+          <label>E-Mail</label>
+          <input type="email" id="ag_email" class="prefilled" value="info@cavier.de" readonly />
+        </div>
+        <div class="field">
+          <label>Geschäftsführer</label>
+          <input type="text" id="ag_gf" class="prefilled" value="Alexander Kunkel" readonly />
+        </div>
+        <div class="field">
+          <label>BG BAU Mitgliedsnummer</label>
+          <input type="text" id="ag_bg" class="prefilled" value="4006 4412 6721 001" readonly />
+        </div>
+        <div class="field">
+          <label>Handelsregister</label>
+          <input type="text" id="ag_hr" class="prefilled" value="HRB 4780, AG Lübeck" readonly />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. BAUSTELLE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">2</span>
+      <h2>Angaben zur Baustelle / zum Objekt</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Bezeichnung der Baustelle / des Objekts <span class="req">*</span></label>
+          <input type="text" id="bs_bezeichnung" placeholder="z.B. Dachsanierung Musterstraße 5, Lübeck" />
+        </div>
+        <div class="field span2">
+          <label>Anschrift der Baustelle <span class="req">*</span></label>
+          <input type="text" id="bs_adresse" placeholder="Straße, Hausnummer, PLZ, Ort" />
+        </div>
+        <div class="field">
+          <label>Auftraggeber / Bauherr <span class="req">*</span></label>
+          <input type="text" id="bs_auftraggeber" placeholder="Name des Bauherrn" />
+        </div>
+        <div class="field">
+          <label>Ansprechpartner Bauherr</label>
+          <input type="text" id="bs_ap" placeholder="Name, Telefon" />
+        </div>
+        <div class="field">
+          <label>Geplanter Arbeitsbeginn <span class="req">*</span></label>
+          <input type="date" id="bs_beginn" onchange="berechneArbeitstage(); pruefeFrist();" />
+        </div>
+        <div class="field">
+          <label>Voraussichtliches Ende <span class="req">*</span></label>
+          <input type="date" id="bs_ende" onchange="berechneArbeitstage()" />
+        </div>
+        <div class="field">
+          <label>Anzahl Arbeitstage (geschätzt)</label>
+          <input type="text" id="bs_tage" class="prefilled" placeholder="wird automatisch berechnet" readonly />
+        </div>
+        <div class="field">
+          <label>Anzahl Beschäftigte</label>
+          <input type="text" id="bs_anzahl" placeholder="z.B. 2 Personen" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. ART DER ASBESTARBEITEN -->
+  <div class="card">
+    <div class="card-header rot">
+      <span class="num">3</span>
+      <h2>Art der Asbestarbeiten</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Beschreibung der Tätigkeit <span class="req">*</span></label>
+          <textarea id="ta_beschreibung" placeholder="z.B. Demontage von asbesthaltigen Wellplatten der Dacheindeckung (Asbestzement, ca. 15% Chrysotil)">Demontage von asbesthaltigen Wellplatten der Dacheindeckung (Asbestzementprodukte, Chrysotil-Anteil bis 15%)</textarea>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <label style="display:block;margin-bottom:10px;">Tätigkeitsart (Mehrfachauswahl möglich) <span class="req">*</span></label>
+        <div class="check-grid" id="taetigkeiten">
+          <label class="check-item"><input type="checkbox" value="Demontage Asbestzementplatten" checked /> Demontage Asbestzementplatten (Dach)</label>
+          <label class="check-item"><input type="checkbox" value="Demontage Fassadenplatten" /> Demontage Asbestzement-Fassadenplatten</label>
+          <label class="check-item"><input type="checkbox" value="Entfernung Dachpappe" /> Entfernung asbesthaltige Dachpappe</label>
+          <label class="check-item"><input type="checkbox" value="Entfernung Bodenbelag" /> Entfernung asbesthaltige Bodenbeläge</label>
+          <label class="check-item"><input type="checkbox" value="Entfernung Brandschutz" /> Entfernung Brandschutzmaterialien</label>
+          <label class="check-item"><input type="checkbox" value="Sonstige" /> Sonstige (s. Beschreibung)</label>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:14px;">
+        <div class="field">
+          <label>Asbestprodukt / Material <span class="req">*</span></label>
+          <select id="ta_material">
+            <option value="Asbestzement (AZ)" selected>Asbestzement (AZ) – Wellplatten, Dachplatten</option>
+            <option value="Asbestzement Fassade">Asbestzement – Fassadenplatten</option>
+            <option value="Spritzasbest">Spritzasbest (schwach gebunden)</option>
+            <option value="Asbestpappe">Asbestpappe / Dichtungen</option>
+            <option value="Asbesthaltige Bodenbeläge">Asbesthaltige Bodenbeläge (PVC)</option>
+            <option value="Sonstige">Sonstige asbesthaltige Materialien</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Asbestart</label>
+          <select id="ta_asbestart">
+            <option value="Chrysotil (Weißasbest)" selected>Chrysotil (Weißasbest)</option>
+            <option value="Krokydolith (Blauasbest)">Krokydolith (Blauasbest)</option>
+            <option value="Amosit (Braunasbest)">Amosit (Braunasbest)</option>
+            <option value="Unbekannt">Unbekannt / nicht analysiert</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Geschätzte Menge (m² oder kg)</label>
+          <input type="text" id="ta_menge" placeholder="z.B. 120 m²" />
+        </div>
+        <div class="field">
+          <label>Arbeitsverfahren</label>
+          <select id="ta_verfahren">
+            <option value="Staubarmes Verfahren (TRGS 519 Anlage 4)" selected>Staubarmes Verfahren (TRGS 519 Anlage 4)</option>
+            <option value="Nassverfahren">Nassverfahren</option>
+            <option value="Handdemontage ohne Brechen">Handdemontage ohne Brechen</option>
+            <option value="Sonstige">Sonstige</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. SCHUTZMASSNAMEN -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">4</span>
+      <h2>Schutzmaßnahmen</h2>
+    </div>
+    <div class="card-body">
+      <label style="display:block;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--grau);text-transform:uppercase;letter-spacing:0.4px;">Vorgesehene Schutzmaßnahmen <span class="req">*</span></label>
+      <div class="check-grid" id="schutzmassnahmen">
+        <label class="check-item"><input type="checkbox" checked /> Abgrenzung des Arbeitsbereichs</label>
+        <label class="check-item"><input type="checkbox" checked /> Kennzeichnung „Zutritt verboten – Asbestfasern"</label>
+        <label class="check-item"><input type="checkbox" checked /> Atemschutz FFP2 / P2-Halbmaske</label>
+        <label class="check-item"><input type="checkbox" checked /> Einweg-Schutzanzug Typ 5</label>
+        <label class="check-item"><input type="checkbox" checked /> Schutzhandschuhe (Nitril/Leder)</label>
+        <label class="check-item"><input type="checkbox" checked /> Anfeuchten des Materials</label>
+        <label class="check-item"><input type="checkbox" checked /> Industriesauger Staubklasse H</label>
+        <label class="check-item"><input type="checkbox" checked /> Folie zum Auffangen von Bruchstücken</label>
+        <label class="check-item"><input type="checkbox" checked /> Verpackung in PE-Säcke / Big-Bags</label>
+        <label class="check-item"><input type="checkbox" checked /> Kennzeichnung Abfall „Achtung – enthält Asbest"</label>
+        <label class="check-item"><input type="checkbox" checked /> Fachgerechte Entsorgung als Sonderabfall</label>
+        <label class="check-item"><input type="checkbox" /> Schwarzweiß-Anlage (bei schwach gebundenem Asbest)</label>
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label>Weitere Schutzmaßnahmen / Anmerkungen</label>
+        <textarea id="sm_weitere" placeholder="z.B. Gerüst vorhanden, Nachbargebäude informiert, ..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. SACHKUNDIGE MITARBEITER -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">5</span>
+      <h2>Sachkundige Mitarbeiter (TRGS 519 Anlage 4)</h2>
+    </div>
+    <div class="card-body">
+      <table class="ma-table" id="ma-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Geburtsdatum</th>
+            <th>Funktion</th>
+            <th>Sachkunde gültig bis</th>
+            <th>Arb.med. Vorsorge bis</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ma-tbody">
+          <!-- Vorausgefüllt aus Projektdaten -->
+        </tbody>
+      </table>
+      <button class="btn-add" onclick="addMitarbeiter()">+ Mitarbeiter hinzufügen</button>
+    </div>
+  </div>
+
+  <!-- ── 6. ENTSORGUNG -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">6</span>
+      <h2>Entsorgung / Abfallentsorgung</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Entsorgungsunternehmen <span class="req">*</span></label>
+          <input type="text" id="ent_firma" placeholder="Name des Entsorgungsunternehmens" />
+        </div>
+        <div class="field">
+          <label>Abfallschlüsselnummer (AVV)</label>
+          <input type="text" id="ent_avv" placeholder="z.B. 17 06 01* (Asbestzement)" value="17 06 01*" />
+        </div>
+        <div class="field">
+          <label>Deponiestandort / Entsorgungsanlage</label>
+          <input type="text" id="ent_deponie" placeholder="Name und Ort der Deponie" />
+        </div>
+        <div class="field">
+          <label>Transportmittel</label>
+          <select id="ent_transport">
+            <option value="Eigentransport">Eigentransport</option>
+            <option value="Fremdtransport">Fremdtransport durch Entsorgungsunternehmen</option>
+            <option value="Container">Container-Abholung</option>
+          </select>
+        </div>
+        <div class="field span2">
+          <label>Verpackungsart</label>
+          <input type="text" id="ent_verpackung" value="PE-Säcke / Big-Bags, gekennzeichnet mit 'Achtung – enthält Asbest'" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 7. BEHÖRDE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">7</span>
+      <h2>Zuständige Behörde</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Behörde <span class="req">*</span></label>
+          <input type="text" id="beh_name" value="Amt für Arbeitsschutz Lübeck" />
+        </div>
+        <div class="field">
+          <label>Anzeige-Datum <span class="req">*</span></label>
+          <input type="date" id="beh_datum" onchange="pruefeFrist()" />
+        </div>
+        <div class="field span2">
+          <label>Anschrift der Behörde</label>
+          <input type="text" id="beh_adresse" placeholder="Straße, PLZ, Ort der Behörde" />
+        </div>
+        <div class="field">
+          <label>Aktenzeichen / Vorgangsnummer (falls bekannt)</label>
+          <input type="text" id="beh_az" placeholder="wird ggf. von Behörde vergeben" />
+        </div>
+        <div class="field">
+          <label>Übermittlungsweg</label>
+          <input type="text" id="beh_weg" class="prefilled" value="E-Mail" readonly />
+        </div>
+        <div class="field">
+          <label>E-Mail-Adresse Behörde</label>
+          <input type="text" id="beh_email" class="prefilled" value="Asbestanzeigen@lasg.landsh.de" readonly />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 8. UNTERSCHRIFT -->
+  <div class="card">
+    <div class="card-header">
+      <span class="num">8</span>
+      <h2>Erklärung &amp; Unterschrift</h2>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:#555;margin-bottom:16px;line-height:1.6;">
+        Hiermit erkläre ich, dass die vorstehenden Angaben vollständig und wahrheitsgemäß sind.
+        Die Arbeiten werden gemäß den Anforderungen der TRGS 519 und der Gefahrstoffverordnung (GefStoffV)
+        durchgeführt. Die sachkundigen Mitarbeiter sind benannt und die erforderliche arbeitsmedizinische
+        Vorsorge ist nachgewiesen.
+      </p>
+      <div class="form-grid">
+        <div class="field">
+          <label>Ort, Datum</label>
+          <input type="text" id="sig_ort" placeholder="Lübeck, " />
+        </div>
+        <div class="field">
+          <label>Name des Unterzeichners</label>
+          <input type="text" id="sig_name" value="Alexander Kunkel" />
+        </div>
+        <div class="field">
+          <label>Funktion</label>
+          <input type="text" id="sig_funktion" value="Geschäftsführer" />
+        </div>
+        <div class="field">
+          <label>Unterschrift</label>
+          <div class="sig-box">Unterschrift (auf Ausdruck)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTION BAR -->
+  <div class="action-bar">
+    <span id="autosave-info"></span>
+    <button class="btn btn-outline" onclick="resetForm()">↺ Zurücksetzen</button>
+    <button class="btn btn-secondary" onclick="saveForm()">💾 Speichern (JSON)</button>
+    <button class="btn btn-outline" onclick="document.getElementById('load-file').click()">📂 Laden (JSON)</button>
+    <input type="file" id="load-file" accept="application/json,.json" style="display:none" onchange="loadForm(event)" />
+    <button class="btn btn-packlist" onclick="showPackliste()">📦 Packliste &amp; Ausdrucke</button>
+    <button class="btn btn-primary" onclick="showPreview()">📄 Vorschau &amp; Drucken</button>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ══════════════════════════════════════════════════════ PACKLISTE OVERLAY -->
+<div id="packliste-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;overflow-y:auto;padding:30px 16px;">
+  <div style="background:white;max-width:860px;margin:0 auto;border-radius:6px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+    <!-- Header -->
+    <div style="background:#1a6b3c;color:white;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:'Oswald',sans-serif;font-size:20px;letter-spacing:1px;">📦 Packliste &amp; erforderliche Ausdrucke</div>
+        <div style="font-size:12px;opacity:0.8;margin-top:3px;">Asbestarbeiten gemäß TRGS 519 – Cavier &amp; Sohn Bedachungen GmbH</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;color:white;border-color:white;" onclick="closePackliste()">✕ Schließen</button>
+        <button class="btn btn-primary" style="padding:8px 16px;font-size:13px;" onclick="printPackliste()">🖨 Drucken / PDF</button>
+      </div>
+    </div>
+    <!-- Body -->
+    <div id="packliste-content" style="padding:28px 36px;font-size:13px;line-height:1.6;">
+      <!-- dynamisch befüllt -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ PREVIEW OVERLAY -->
+<div id="preview-overlay">
+  <div id="preview-box">
+    <div class="preview-header">
+      <h3>📄 Asbestanzeige – Vorschau</h3>
+      <div class="preview-actions">
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;" onclick="closePreview()">✕ Schließen</button>
+        <button class="btn btn-primary" style="padding:8px 16px;font-size:13px;" onclick="printDoc()">🖨 Drucken / PDF</button>
+      </div>
+    </div>
+    <div class="preview-content" id="preview-content">
+      <!-- dynamisch befüllt -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ TOAST -->
+<div id="toast">✓ Entwurf gespeichert!</div>
+
+<!-- ══════════════════════════════════════════════════════ SCRIPT -->
+<script>
+  // ── Vorausgefüllte Mitarbeiterdaten aus Projektdokumenten
+  const defaultMitarbeiter = [
+    {
+      name: 'Peter Venohr',
+      geb: '10.09.1987',
+      funktion: 'Sachkundiger Aufsichtsführender',
+      sachkunde: '24.10.2027',
+      vorsorge: '07.2027'
+    },
+    {
+      name: 'Ulf Kossak',
+      geb: '23.03.1967',
+      funktion: 'Sachkundiger Mitarbeiter',
+      sachkunde: '24.10.2027',
+      vorsorge: '07.2027'
+    }
+  ];
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Datum "TT.MM.JJJJ" oder "MM.JJJJ" (Monatsende) -> Date oder null
+  function parseDatum(str) {
+    if (!str) return null;
+    const p = String(str).trim().split('.');
+    if (p.length === 3) { const dt = new Date(+p[2], +p[1] - 1, +p[0], 23, 59); return isNaN(dt) ? null : dt; }
+    if (p.length === 2) { const dt = new Date(+p[1], +p[0], 0, 23, 59); return isNaN(dt) ? null : dt; }
+    return null;
+  }
+
+  // Status: prüft Sachkunde UND arbeitsmedizinische Vorsorge, warnt 3 Monate vor Ablauf
+  function statusFuer(ma) {
+    if (!String(ma.name || '').trim()) return { cls: 'warn', txt: '– Name fehlt' };
+    const s = parseDatum(ma.sachkunde), vo = parseDatum(ma.vorsorge), now = new Date();
+    if (!s || !vo) return { cls: 'warn', txt: '⚠ Datum fehlt' };
+    if (s < now)  return { cls: 'warn', txt: '⚠ Sachkunde abgelaufen' };
+    if (vo < now) return { cls: 'warn', txt: '⚠ Vorsorge abgelaufen' };
+    const bald = new Date(); bald.setMonth(bald.getMonth() + 3);
+    if (s < bald || vo < bald) return { cls: 'warn', txt: '⚠ Läuft in <3 Mon. ab' };
+    return { cls: '', txt: '✓ Gültig' };
+  }
+
+  function renderMitarbeiter(data) {
+    const tbody = document.getElementById('ma-tbody');
+    tbody.innerHTML = '';
+    data.forEach((ma, i) => {
+      const st = statusFuer(ma);
+      tbody.innerHTML += `
+        <tr id="ma-row-${i}">
+          <td><input type="text" value="${esc(ma.name)}" placeholder="Name" style="width:100%" oninput="syncMitarbeiter()" /></td>
+          <td><input type="text" value="${esc(ma.geb)}" placeholder="TT.MM.JJJJ" style="width:100px" oninput="syncMitarbeiter()" /></td>
+          <td>
+            <select style="width:100%" onchange="syncMitarbeiter()">
+              <option ${ma.funktion.includes('Aufsicht') ? 'selected' : ''}>Sachkundiger Aufsichtsführender</option>
+              <option ${ma.funktion.includes('Mitarbeiter') ? 'selected' : ''}>Sachkundiger Mitarbeiter</option>
+              <option ${ma.funktion.includes('Helfer') ? 'selected' : ''}>Helfer (unter Aufsicht)</option>
+            </select>
+          </td>
+          <td><input type="text" value="${esc(ma.sachkunde)}" placeholder="TT.MM.JJJJ" style="width:100px" oninput="syncMitarbeiter()" /></td>
+          <td><input type="text" value="${esc(ma.vorsorge)}" placeholder="MM.JJJJ" style="width:80px" oninput="syncMitarbeiter()" /></td>
+          <td><span class="tag ${st.cls}">${st.txt}</span></td>
+          <td><button class="btn-del" onclick="delMitarbeiter(${i})" title="Entfernen">✕</button></td>
+        </tr>`;
+    });
+  }
+
+  // Eingaben live in die Daten übernehmen + Status aktualisieren (ohne Neuaufbau, Fokus bleibt erhalten)
+  function syncMitarbeiter() {
+    mitarbeiterData = getMitarbeiterFromTable();
+    document.querySelectorAll('#ma-tbody tr').forEach((row, i) => {
+      const st = statusFuer(mitarbeiterData[i] || {});
+      const tag = row.querySelector('.tag');
+      if (tag) { tag.className = 'tag ' + st.cls; tag.textContent = st.txt; }
+    });
+  }
+
+  let mitarbeiterData = defaultMitarbeiter.map(m => ({ ...m }));
+  renderMitarbeiter(mitarbeiterData);
+
+  function addMitarbeiter() {
+    mitarbeiterData = getMitarbeiterFromTable(); // aktuelle Eingaben sichern
+    mitarbeiterData.push({ name: '', geb: '', funktion: 'Sachkundiger Mitarbeiter', sachkunde: '', vorsorge: '' });
+    renderMitarbeiter(mitarbeiterData);
+  }
+
+  function delMitarbeiter(i) {
+    mitarbeiterData = getMitarbeiterFromTable(); // aktuelle Eingaben sichern
+    mitarbeiterData.splice(i, 1);
+    renderMitarbeiter(mitarbeiterData);
+  }
+
+  // ── Arbeitstage automatisch berechnen (Mo–Fr, ohne Wochenenden)
+  function berechneArbeitstage() {
+    const b = document.getElementById('bs_beginn').value;
+    const e = document.getElementById('bs_ende').value;
+    const feld = document.getElementById('bs_tage');
+    if (!b || !e) { feld.value = ''; return; }
+    const start = new Date(b);
+    const ende  = new Date(e);
+    if (ende < start) { feld.value = 'Ende vor Beginn!'; return; }
+    let tage = 0;
+    const cur = new Date(start);
+    while (cur <= ende) {
+      const dow = cur.getDay();
+      if (dow !== 0 && dow !== 6) tage++;
+      cur.setDate(cur.getDate() + 1);
+    }
+    feld.value = tage + (tage === 1 ? ' Arbeitstag (Mo–Fr)' : ' Arbeitstage (Mo–Fr)');
+  }
+
+  // ── 7-Werktage-Frist prüfen (§ 41 GefStoffV: Anzeige mind. 7 Werktage vor Beginn)
+  function werktageZwischen(von, bis) {
+    let n = 0;
+    const cur = new Date(von);
+    cur.setDate(cur.getDate() + 1); // ab dem Folgetag zählen
+    while (cur <= bis) {
+      const dow = cur.getDay();
+      if (dow !== 0) n++; // Werktage = Mo–Sa
+      cur.setDate(cur.getDate() + 1);
+    }
+    return n;
+  }
+
+  function pruefeFrist() {
+    const box = document.getElementById('frist-status');
+    const beginnVal = document.getElementById('bs_beginn').value;
+    const anzeigeVal = document.getElementById('beh_datum').value;
+    if (!beginnVal || !anzeigeVal) { box.style.display = 'none'; return; }
+    const beginn = new Date(beginnVal);
+    const anzeige = new Date(anzeigeVal);
+    const wt = werktageZwischen(anzeige, beginn);
+    box.style.display = 'block';
+    if (beginn <= anzeige) {
+      box.className = 'frist-warn';
+      box.innerHTML = '⚠ <strong>Frist nicht einhaltbar:</strong> Der Arbeitsbeginn liegt am oder vor dem Anzeige-Datum. Die Anzeige muss mindestens 7 Werktage vor Beginn eingereicht werden.';
+    } else if (wt >= 7) {
+      box.className = 'frist-ok';
+      box.innerHTML = `✓ <strong>Frist eingehalten:</strong> Zwischen Anzeige (${anzeige.toLocaleDateString('de-DE')}) und Arbeitsbeginn (${beginn.toLocaleDateString('de-DE')}) liegen ${wt} Werktage (mind. 7 erforderlich).`;
+    } else {
+      box.className = 'frist-warn';
+      box.innerHTML = `⚠ <strong>Frist zu kurz:</strong> Zwischen Anzeige und Arbeitsbeginn liegen nur ${wt} Werktag${wt === 1 ? '' : 'e'} – erforderlich sind mindestens 7. Arbeitsbeginn frühestens verschieben oder Anzeige früher einreichen.`;
+    }
+  }
+
+  // ── Pflichtfeld-Prüfung vor Vorschau/Druck
+  const PFLICHT_FELDER = [
+    ['bs_bezeichnung', 'Bezeichnung der Baustelle'],
+    ['bs_adresse', 'Anschrift der Baustelle'],
+    ['bs_auftraggeber', 'Auftraggeber / Bauherr'],
+    ['bs_beginn', 'Geplanter Arbeitsbeginn'],
+    ['bs_ende', 'Voraussichtliches Ende'],
+    ['ta_beschreibung', 'Beschreibung der Tätigkeit'],
+    ['ent_firma', 'Entsorgungsunternehmen'],
+    ['beh_name', 'Zuständige Behörde'],
+    ['beh_datum', 'Anzeige-Datum']
+  ];
+
+  function pruefePflichtfelder() {
+    const fehlend = [];
+    document.querySelectorAll('.feld-fehler').forEach(el => el.classList.remove('feld-fehler'));
+    PFLICHT_FELDER.forEach(([id, label]) => {
+      const el = document.getElementById(id);
+      if (el && !el.value.trim()) { el.classList.add('feld-fehler'); fehlend.push(label); }
+    });
+    if (getChecked('taetigkeiten').length === 0) {
+      document.getElementById('taetigkeiten').classList.add('feld-fehler');
+      fehlend.push('Tätigkeitsart (mind. eine auswählen)');
+    }
+    if (getChecked('schutzmassnahmen').length === 0) {
+      document.getElementById('schutzmassnahmen').classList.add('feld-fehler');
+      fehlend.push('Schutzmaßnahmen (mind. eine auswählen)');
+    }
+    const ma = getMitarbeiterFromTable().filter(m => m.name.trim());
+    if (ma.length === 0) fehlend.push('Mindestens ein sachkundiger Mitarbeiter');
+    if (fehlend.length > 0) {
+      const weiter = confirm('Folgende Pflichtangaben fehlen noch:\n\n• ' + fehlend.join('\n• ') + '\n\nTrotzdem Vorschau anzeigen?');
+      if (!weiter) {
+        const erstes = document.querySelector('.feld-fehler');
+        if (erstes) erstes.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ── Automatisches Zwischenspeichern (Entwurf im Browser)
+  const AUTOSAVE_KEY = 'asbestanzeige_entwurf_v11';
+  let autosaveTimer = null;
+
+  function autosave() {
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(sammleFormular()));
+        const info = document.getElementById('autosave-info');
+        if (info) info.textContent = '✓ Entwurf automatisch gespeichert (' + new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ')';
+      } catch (e) { /* localStorage nicht verfügbar – ignorieren */ }
+    }, 800);
+  }
+
+  function autosaveWiederherstellen() {
+    try {
+      const raw = localStorage.getItem(AUTOSAVE_KEY);
+      if (!raw) return;
+      const daten = JSON.parse(raw);
+      const hatInhalt = daten.felder && ['bs_bezeichnung','bs_adresse','bs_auftraggeber'].some(id => (daten.felder[id] || '').trim());
+      if (!hatInhalt) return;
+      const wann = daten._gespeichert ? new Date(daten._gespeichert).toLocaleString('de-DE') : 'unbekannt';
+      if (!confirm('Es wurde ein automatisch gespeicherter Entwurf gefunden (' + wann + ').\n\nEntwurf wiederherstellen?')) {
+        localStorage.removeItem(AUTOSAVE_KEY);
+        return;
+      }
+      datenAnwenden(daten);
+      zeigeToast('✓ Entwurf wiederhergestellt!');
+    } catch (e) { /* ignorieren */ }
+  }
+
+  function zeigeToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // Autosave an alle Eingaben hängen
+  document.addEventListener('input', autosave);
+  document.addEventListener('change', autosave);
+
+  // ── Heute als Standard für Anzeige-Datum
+  document.getElementById('beh_datum').valueAsDate = new Date();
+
+  // ── Ort/Datum Feld
+  const today = new Date();
+  document.getElementById('sig_ort').value = `Lübeck, ${today.toLocaleDateString('de-DE')}`;
+
+  // ── Anzeigen-Nr.: einmal je Vorgang erzeugen und beibehalten
+  let anzeigenNrCache = null;
+  function holeAnzeigenNr() {
+    if (!anzeigenNrCache) {
+      anzeigenNrCache = 'AZ-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
+    }
+    return anzeigenNrCache;
+  }
+
+  // ── Sammle Checkboxen
+  function getChecked(containerId) {
+    return [...document.querySelectorAll(`#${containerId} input[type=checkbox]:checked`)]
+      .map(cb => cb.value || cb.parentElement.textContent.trim());
+  }
+
+  // ── Mitarbeiterdaten aus Tabelle lesen
+  function getMitarbeiterFromTable() {
+    const rows = document.querySelectorAll('#ma-tbody tr');
+    return [...rows].map(row => {
+      const inputs = row.querySelectorAll('input');
+      const sel = row.querySelector('select');
+      return {
+        name: inputs[0]?.value || '',
+        geb: inputs[1]?.value || '',
+        funktion: sel?.value || '',
+        sachkunde: inputs[2]?.value || '',
+        vorsorge: inputs[3]?.value || ''
+      };
+    });
+  }
+
+  // ── VORSCHAU
+  function showPreview() {
+    if (!pruefePflichtfelder()) return;
+    const ma = getMitarbeiterFromTable();
+    const taetigkeiten = getChecked('taetigkeiten');
+    const schutzmassnahmen = getChecked('schutzmassnahmen');
+
+    const anzeigenNr = holeAnzeigenNr();
+
+    document.getElementById('preview-content').innerHTML = `
+      <div class="warn-box">
+        ⚠ <strong>Asbestarbeiten – Anzeigepflichtig gemäß § 41 GefStoffV i.V.m. TRGS 519</strong><br>
+        Mindestens 7 Werktage vor Arbeitsbeginn bei der zuständigen Behörde einzureichen.
+      </div>
+
+      <div class="doc-header">
+        <div class="doc-logo-block">
+          <div class="doc-firma">Cavier &amp; Sohn Bedachungen GmbH</div>
+          <div class="doc-adresse">Zeißstraße 2 · 23560 Lübeck<br>Tel.: 0451 580 530 · info@cavier.de · www.cavier.de<br>Seit 1891 · GF: Alexander Kunkel</div>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-nr">${anzeigenNr}</div>
+          <div>Datum: ${document.getElementById('beh_datum').value ? new Date(document.getElementById('beh_datum').value).toLocaleDateString('de-DE') : '–'}</div>
+          <div>BG BAU: 4006 4412 6721 001</div>
+        </div>
+      </div>
+
+      <div class="doc-title">
+        <h2>ASBESTANZEIGE</h2>
+        <p>gemäß § 41 GefStoffV i.V.m. TRGS 519 – Anlage 4</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">1. Arbeitgeber / Auftragnehmer</div>
+        <div class="doc-grid">
+          <span class="dl">Firma:</span><span class="dd">Cavier &amp; Sohn Bedachungen GmbH</span>
+          <span class="dl">Anschrift:</span><span class="dd">Zeißstraße 2, 23560 Lübeck</span>
+          <span class="dl">Telefon:</span><span class="dd">0451 580 530</span>
+          <span class="dl">E-Mail:</span><span class="dd">info@cavier.de</span>
+          <span class="dl">Geschäftsführer:</span><span class="dd">Alexander Kunkel</span>
+          <span class="dl">Handelsregister:</span><span class="dd">HRB 4780, AG Lübeck</span>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">2. Baustelle / Objekt</div>
+        <div class="doc-grid">
+          <span class="dl">Bezeichnung:</span><span class="dd">${v('bs_bezeichnung') || '–'}</span>
+          <span class="dl">Anschrift:</span><span class="dd">${v('bs_adresse') || '–'}</span>
+          <span class="dl">Auftraggeber:</span><span class="dd">${v('bs_auftraggeber') || '–'}</span>
+          <span class="dl">Ansprechpartner:</span><span class="dd">${v('bs_ap') || '–'}</span>
+          <span class="dl">Arbeitsbeginn:</span><span class="dd">${fmtDate('bs_beginn')}</span>
+          <span class="dl">Voraussichtl. Ende:</span><span class="dd">${fmtDate('bs_ende')}</span>
+          <span class="dl">Arbeitstage:</span><span class="dd">${v('bs_tage') || '–'}</span>
+          <span class="dl">Beschäftigte:</span><span class="dd">${v('bs_anzahl') || ma.length + ' Personen'}</span>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">3. Art der Asbestarbeiten</div>
+        <div class="doc-grid">
+          <span class="dl">Beschreibung:</span><span class="dd">${v('ta_beschreibung') || '–'}</span>
+          <span class="dl">Tätigkeiten:</span><span class="dd">${taetigkeiten.join(', ') || '–'}</span>
+          <span class="dl">Material:</span><span class="dd">${v('ta_material') || '–'}</span>
+          <span class="dl">Asbestart:</span><span class="dd">${v('ta_asbestart') || '–'}</span>
+          <span class="dl">Menge:</span><span class="dd">${v('ta_menge') || '–'}</span>
+          <span class="dl">Verfahren:</span><span class="dd">${v('ta_verfahren') || '–'}</span>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">4. Schutzmaßnahmen</div>
+        <p style="font-size:12px;">${schutzmassnahmen.join(' · ') || '–'}</p>
+        ${v('sm_weitere') ? `<p style="font-size:12px;margin-top:6px;"><strong>Weitere:</strong> ${v('sm_weitere')}</p>` : ''}
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">5. Sachkundige Mitarbeiter (TRGS 519 Anlage 4)</div>
+        <table class="doc-table">
+          <thead><tr><th>Name</th><th>Geb.-Datum</th><th>Funktion</th><th>Sachkunde bis</th><th>Arb.med. Vorsorge bis</th></tr></thead>
+          <tbody>
+            ${ma.map(m => `<tr><td>${esc(m.name)||'–'}</td><td>${esc(m.geb)||'–'}</td><td>${esc(m.funktion)||'–'}</td><td>${esc(m.sachkunde)||'–'}</td><td>${esc(m.vorsorge)||'–'}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">6. Entsorgung</div>
+        <div class="doc-grid">
+          <span class="dl">Entsorgungsunternehmen:</span><span class="dd">${v('ent_firma') || '–'}</span>
+          <span class="dl">Abfallschlüssel (AVV):</span><span class="dd">${v('ent_avv') || '–'}</span>
+          <span class="dl">Deponie / Anlage:</span><span class="dd">${v('ent_deponie') || '–'}</span>
+          <span class="dl">Transport:</span><span class="dd">${v('ent_transport') || '–'}</span>
+          <span class="dl">Verpackung:</span><span class="dd">${v('ent_verpackung') || '–'}</span>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">7. Zuständige Behörde</div>
+        <div class="doc-grid">
+          <span class="dl">Behörde:</span><span class="dd">${v('beh_name') || '–'}</span>
+          <span class="dl">Anschrift:</span><span class="dd">${v('beh_adresse') || '–'}</span>
+          <span class="dl">Anzeige-Datum:</span><span class="dd">${fmtDate('beh_datum')}</span>
+          <span class="dl">Übermittlung:</span><span class="dd">${v('beh_weg') || '–'}</span>
+          <span class="dl">Aktenzeichen:</span><span class="dd">${v('beh_az') || 'noch nicht vergeben'}</span>
+        </div>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-title">8. Erklärung</div>
+        <p style="font-size:11px;color:#555;margin-bottom:14px;">
+          Hiermit erkläre ich, dass die vorstehenden Angaben vollständig und wahrheitsgemäß sind.
+          Die Arbeiten werden gemäß den Anforderungen der TRGS 519 und der GefStoffV durchgeführt.
+        </p>
+        <div class="doc-sig">
+          <div class="doc-sig-field">Ort, Datum: ${v('sig_ort') || '–'}</div>
+          <div class="doc-sig-field">Unterschrift: ${v('sig_name') || ''}, ${v('sig_funktion') || ''}</div>
+        </div>
+      </div>
+
+      <div class="doc-footer">
+        Cavier &amp; Sohn Bedachungen GmbH · Zeißstraße 2 · 23560 Lübeck · Tel.: 0451 580 530 · info@cavier.de · www.cavier.de<br>
+        Handelsregister: HRB 4780 AG Lübeck · USt-ID: DE 137733796 · BG BAU: 4006 4412 6721 001
+      </div>
+    `;
+
+    document.getElementById('preview-overlay').classList.add('active');
+  }
+
+  function v(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    const raw = el.tagName === 'SELECT' ? el.options[el.selectedIndex]?.text || '' : el.value;
+    return esc(raw); // Eingaben werden per innerHTML ausgegeben – daher escapen
+  }
+
+  function fmtDate(id) {
+    const val = document.getElementById(id)?.value;
+    if (!val) return '–';
+    try { return new Date(val).toLocaleDateString('de-DE'); } catch { return val; }
+  }
+
+  function closePreview() {
+    document.getElementById('preview-overlay').classList.remove('active');
+  }
+
+  function printDoc() {
+    const content = document.getElementById('preview-content').innerHTML;
+    const win = window.open('', '_blank');
+    if (!win) { alert('Das Druckfenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben und erneut versuchen.'); return; }
+    win.document.write(`<!DOCTYPE html><html lang="de"><head>
+      <meta charset="UTF-8"/>
+      <title>Asbestanzeige – Cavier & Sohn</title>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet"/>
+      <style>
+        body { font-family: 'Open Sans', sans-serif; margin: 20mm 20mm 20mm 20mm; font-size: 12px; color: #333; }
+        .warn-box { background: #fdecea; border: 1px solid #f5c6cb; border-radius: 4px; padding: 8px 12px; font-size: 11px; color: #922b21; margin-bottom: 14px; }
+        .doc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 3px solid #c0392b; padding-bottom: 16px; }
+        .doc-firma { font-family: 'Oswald', sans-serif; font-size: 20px; color: #c0392b; font-weight: 700; }
+        .doc-adresse { font-size: 11px; color: #666; margin-top: 3px; }
+        .doc-meta { text-align: right; font-size: 11px; color: #666; }
+        .doc-nr { font-size: 16px; font-weight: 700; color: #2c3e50; font-family: 'Oswald', sans-serif; }
+        .doc-title { text-align: center; margin: 18px 0 22px; }
+        .doc-title h2 { font-family: 'Oswald', sans-serif; font-size: 22px; color: #2c3e50; letter-spacing: 1px; }
+        .doc-title p { font-size: 11px; color: #888; margin-top: 4px; }
+        .doc-section { margin-bottom: 16px; }
+        .doc-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #c0392b; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 10px; }
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; font-size: 11px; }
+        .dl { color: #888; } .dd { font-weight: 600; color: #333; }
+        .doc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+        .doc-table th { background: #ecf0f1; padding: 5px 8px; text-align: left; font-size: 10px; text-transform: uppercase; }
+        .doc-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+        .doc-sig { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 24px; }
+        .doc-sig-field { border-top: 1.5px solid #333; padding-top: 6px; font-size: 11px; color: #666; }
+        .doc-footer { margin-top: 24px; border-top: 1px solid #ddd; padding-top: 10px; font-size: 10px; color: #aaa; text-align: center; }
+      </style>
+    </head><body>${content}</body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 600);
+  }
+
+  // ── Alle Formularfeld-IDs (Text/Date/Select/Textarea)
+  const ALL_FIELD_IDS = [
+    'ag_firma','ag_strasse','ag_ort','ag_tel','ag_email','ag_gf','ag_bg','ag_hr',
+    'bs_bezeichnung','bs_adresse','bs_auftraggeber','bs_ap','bs_beginn','bs_ende','bs_tage','bs_anzahl',
+    'ta_beschreibung','ta_material','ta_asbestart','ta_menge','ta_verfahren',
+    'sm_weitere',
+    'ent_firma','ent_avv','ent_deponie','ent_transport','ent_verpackung',
+    'beh_name','beh_datum','beh_adresse','beh_az','beh_weg','beh_email',
+    'sig_ort','sig_name','sig_funktion'
+  ];
+
+  function sammleFormular() {
+    const felder = {};
+    ALL_FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) felder[id] = el.value;
+    });
+    const checks = {};
+    document.querySelectorAll('input[type=checkbox]').forEach((cb, i) => {
+      const key = cb.id || (cb.name ? cb.name + '_' + i : 'cb_' + i);
+      checks[key] = cb.checked;
+    });
+    return {
+      _typ: 'Asbestanzeige',
+      _version: 7,
+      _gespeichert: new Date().toISOString(),
+      _anzeigenNr: anzeigenNrCache,
+      felder,
+      checks,
+      mitarbeiter: getMitarbeiterFromTable()
+    };
+  }
+
+  // ── Geladene/wiederhergestellte Daten ins Formular übernehmen
+  function datenAnwenden(daten) {
+    if (Array.isArray(daten.mitarbeiter)) {
+      mitarbeiterData = daten.mitarbeiter.map(m => ({
+        name: m.name || '', geb: m.geb || '',
+        funktion: m.funktion || 'Sachkundiger Mitarbeiter',
+        sachkunde: m.sachkunde || '', vorsorge: m.vorsorge || ''
+      }));
+      renderMitarbeiter(mitarbeiterData);
+    }
+    if (daten.felder) {
+      Object.entries(daten.felder).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+    }
+    if (daten.checks) {
+      document.querySelectorAll('input[type=checkbox]').forEach((cb, i) => {
+        const key = cb.id || (cb.name ? cb.name + '_' + i : 'cb_' + i);
+        if (key in daten.checks) cb.checked = daten.checks[key];
+      });
+    }
+    if (daten._anzeigenNr) anzeigenNrCache = daten._anzeigenNr;
+    berechneArbeitstage();
+    pruefeFrist();
+  }
+
+  function saveForm() {
+    const daten = sammleFormular();
+    const blob = new Blob([JSON.stringify(daten, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const datum = new Date().toISOString().slice(0,10);
+    const bez = (document.getElementById('bs_bezeichnung').value || 'Asbestanzeige')
+      .replace(/[^a-zA-Z0-9äöüÄÖÜ_-]+/g, '_').slice(0, 40);
+    a.href = url;
+    a.download = `Asbestanzeige_${bez}_${datum}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    zeigeToast('✓ JSON gespeichert!');
+  }
+
+  function loadForm(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const daten = JSON.parse(e.target.result);
+        if (daten._typ && daten._typ !== 'Asbestanzeige') {
+          if (!confirm('Diese Datei stammt evtl. nicht aus dieser App. Trotzdem laden?')) {
+            event.target.value = ''; return;
+          }
+        }
+        datenAnwenden(daten);
+        autosave();
+        zeigeToast('✓ Daten geladen!');
+      } catch (err) {
+        alert('Fehler beim Laden der Datei: ' + err.message);
+      }
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  function resetForm() {
+    if (!confirm('Alle Eingaben zurücksetzen? Vorausgefüllte Firmendaten bleiben erhalten.')) return;
+    ['bs_bezeichnung','bs_adresse','bs_auftraggeber','bs_ap','bs_beginn','bs_ende',
+     'bs_tage','bs_anzahl','ta_beschreibung','ta_menge','sm_weitere',
+     'ent_firma','ent_deponie','beh_adresse','beh_az'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('ent_avv').value = '17 06 01*';
+    document.getElementById('ent_verpackung').value = "PE-Säcke / Big-Bags, gekennzeichnet mit 'Achtung – enthält Asbest'";
+    document.getElementById('beh_datum').valueAsDate = new Date();
+    document.getElementById('sig_ort').value = `Lübeck, ${new Date().toLocaleDateString('de-DE')}`;
+    document.querySelectorAll('#taetigkeiten input[type=checkbox], #schutzmassnahmen input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.feld-fehler').forEach(el => el.classList.remove('feld-fehler'));
+    document.getElementById('frist-status').style.display = 'none';
+    anzeigenNrCache = null;
+    mitarbeiterData = defaultMitarbeiter.map(m => ({ ...m }));
+    renderMitarbeiter(mitarbeiterData);
+    try { localStorage.removeItem(AUTOSAVE_KEY); } catch (e) {}
+    const info = document.getElementById('autosave-info');
+    if (info) info.textContent = '';
+    zeigeToast('✓ Formular zurückgesetzt');
+  }
+
+  // ESC schließt Overlays
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closePreview();
+      closePackliste();
+      const dlg = document.getElementById('notfall-dlg');
+      if (dlg) dlg.remove();
+    }
+  });
+
+  // Overlay schließen bei Klick außerhalb
+  document.getElementById('preview-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closePreview();
+  });
+  document.getElementById('packliste-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closePackliste();
+  });
+
+  // ══════════════════════════════════════════════════════
+  // PACKLISTE
+  // ══════════════════════════════════════════════════════
+
+  const packlisteKategorien = [
+    {
+      id: 'psa',
+      icon: '🦺',
+      titel: 'Persönliche Schutzausrüstung (PSA)',
+      farbe: '#c0392b',
+      items: [
+        { text: 'Atemschutzmaske FFP2 (mind. 1 je Person + Reserve)', pflicht: true },
+        { text: 'Halbmaske mit P2-Partikelfilter (Alternative zu FFP2)', pflicht: false },
+        { text: 'Einweg-Schutzanzug Typ 5 (mind. 1 je Person + Reserve)', pflicht: true },
+        { text: 'Schutzhandschuhe (Nitril oder chromatfreies Leder)', pflicht: true },
+        { text: 'Schutzbrille / Augenschutz', pflicht: false },
+        { text: 'Sicherheitsschuhe (S3)', pflicht: true },
+        { text: 'Wechselkleidung / Straßenkleidung (getrennt aufbewahren)', pflicht: true },
+      ]
+    },
+    {
+      id: 'werkzeug',
+      icon: '🔧',
+      titel: 'Werkzeug &amp; Arbeitsmittel',
+      farbe: '#2c3e50',
+      items: [
+        { text: 'Industriesauger Staubklasse H (mit Ersatzfilter)', pflicht: true },
+        { text: 'Sprühflasche / Wasserkanister zum Anfeuchten des Materials', pflicht: true },
+        { text: 'Folie (PE) zum Auslegen unter dem Arbeitsbereich', pflicht: true },
+        { text: 'Klebeband / Kreppband zur Absicherung der Folie', pflicht: true },
+        { text: 'Absperrband + Standfüße / Warnbaken', pflicht: true },
+        { text: 'Hinweisschild „Zutritt verboten – Asbestfasern"', pflicht: true },
+        { text: 'Werkzeug zur schonenden Demontage (kein Winkelschleifer!)', pflicht: true },
+        { text: 'Leiter / Gerüst (geprüft, Prüfprotokoll vorhanden)', pflicht: true },
+        { text: 'Erste-Hilfe-Kasten (DIN 13157)', pflicht: true },
+        { text: 'Feuerlöscher', pflicht: false },
+      ]
+    },
+    {
+      id: 'entsorgung',
+      icon: '🗑️',
+      titel: 'Verpackung &amp; Entsorgung',
+      farbe: '#7d3c98',
+      items: [
+        { text: 'PE-Säcke (mind. 0,2 mm stark) oder Big-Bags', pflicht: true },
+        { text: 'Aufkleber „Achtung – enthält Asbest" für Säcke/Behälter', pflicht: true },
+        { text: 'Kabelbinder / Bindedraht zum Verschließen der Säcke', pflicht: true },
+        { text: 'Begleitschein für Sonderabfall (AVV 17 06 01*)', pflicht: true },
+        { text: 'Kontakt Entsorgungsunternehmen (Telefonnummer griffbereit)', pflicht: true },
+      ]
+    },
+    {
+      id: 'dokumente',
+      icon: '📋',
+      titel: 'Erforderliche Ausdrucke – Vorhalten auf der Baustelle',
+      farbe: '#1a6b3c',
+      pflichthinweis: true,
+      hatPDF: true,
+      items: [
+        { text: 'Asbestanzeige (diese Anzeige)', pflicht: true, pdfFn: 'pdfAsbestanzeige' },
+        { text: 'Betriebsanweisung Asbestzementprodukte (§ 14 GefStoffV)', pflicht: true, pdfFn: 'pdfBetriebsanweisung' },
+        { text: 'Gefährdungsbeurteilung Asbest (TRGS 519)', pflicht: true, pdfFn: 'pdfGefaehrdungsbeurteilung' },
+        { text: 'Sachkundenachweis TRGS 519 – Peter Venohr (gültig bis 24.10.2027)', pflicht: true, pdfFn: 'pdfSachkundeVenohr' },
+        { text: 'Sachkundenachweis TRGS 519 – Ulf Kossak (gültig bis 24.10.2027)', pflicht: true, pdfFn: 'pdfSachkundeKossak' },
+        { text: 'Vorsorgebescheinigung AMD BG BAU – Peter Venohr (bis 07.2027)', pflicht: true, pdfFn: 'pdfVorsorgeVenohr' },
+        { text: 'Vorsorgebescheinigung AMD BG BAU – Ulf Kossak (bis 07.2027)', pflicht: true, pdfFn: 'pdfVorsorgeKossak' },
+        { text: 'Notfall- & Erste-Hilfe-Aushang', pflicht: true, pdfFn: 'pdfNotfall' },
+        { text: 'Nachweis Entsorgungsunternehmen / Entsorgungsvertrag', pflicht: true, pdfFn: null },
+        { text: 'Prüfprotokoll Gerüst / Leiter', pflicht: true, pdfFn: null },
+        { text: 'Prüfprotokoll Industriesauger Klasse H', pflicht: true, pdfFn: null },
+      ]
+    },
+    {
+      id: 'sonstiges',
+      icon: '📌',
+      titel: 'Sonstiges / Organisatorisches',
+      farbe: '#d35400',
+      items: [
+        { text: 'Nachbarn / Anwohner informiert (ggf. schriftlich)', pflicht: false },
+        { text: 'Bauherr über Asbestvorkommen und Maßnahmen informiert', pflicht: true },
+        { text: 'Arbeitsbereich abgegrenzt und gekennzeichnet', pflicht: true },
+        { text: 'Mobiltelefon / Kommunikation auf der Baustelle sichergestellt', pflicht: true },
+        { text: 'Wetterbericht geprüft (kein Sturm / Starkregen während Demontage)', pflicht: false },
+        { text: 'Parkgenehmigung / Halteverbotzone für Fahrzeuge (falls nötig)', pflicht: false },
+      ]
+    }
+  ];
+
+  function showPackliste() {
+    const baustelle = document.getElementById('bs_bezeichnung').value || 'Baustelle (noch nicht angegeben)';
+    const adresse = document.getElementById('bs_adresse').value || '';
+    const beginn = document.getElementById('bs_beginn').value ? new Date(document.getElementById('bs_beginn').value).toLocaleDateString('de-DE') : '–';
+    const heute = new Date().toLocaleDateString('de-DE');
+
+    let html = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1a6b3c;padding-bottom:14px;margin-bottom:20px;">
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:18px;color:#1a6b3c;font-weight:700;">Cavier &amp; Sohn Bedachungen GmbH</div>
+          <div style="font-size:11px;color:#666;">Zeißstraße 2 · 23560 Lübeck · Tel.: 0451 580 530</div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#666;">
+          <div style="font-family:'Oswald',sans-serif;font-size:15px;color:#2c3e50;font-weight:700;">PACKLISTE ASBEST</div>
+          <div>Erstellt: ${heute}</div>
+        </div>
+      </div>
+
+      <div style="background:#f0faf4;border:1px solid #a9dfbf;border-radius:5px;padding:12px 16px;margin-bottom:20px;font-size:12px;">
+        <strong style="color:#1a6b3c;">Baustelle:</strong> ${baustelle}${adresse ? ' · ' + adresse : ''} &nbsp;|&nbsp;
+        <strong style="color:#1a6b3c;">Geplanter Beginn:</strong> ${beginn}
+      </div>
+
+      <div style="background:#fdecea;border:1px solid #f5c6cb;border-radius:4px;padding:10px 14px;margin-bottom:20px;font-size:11px;color:#922b21;">
+        ⚠ <strong>Pflichtdokumente</strong> (markiert mit 🔴) müssen auf der Baustelle <strong>im Original oder als Kopie vorgehalten</strong> werden und sind bei Kontrollen durch das Amt für Arbeitsschutz vorzuzeigen.
+      </div>
+    `;
+
+    packlisteKategorien.forEach(kat => {
+      const hatPDF = kat.hatPDF;
+      html += `
+        <div style="margin-bottom:22px;">
+          <div style="background:${kat.farbe};color:white;padding:9px 16px;border-radius:5px 5px 0 0;font-family:'Oswald',sans-serif;font-size:15px;letter-spacing:0.5px;">
+            ${kat.icon} ${kat.titel}
+            ${kat.pflichthinweis ? '<span style="font-size:11px;opacity:0.85;margin-left:10px;font-family:\'Open Sans\',sans-serif;">→ Alle Pflichtdokumente im Original/Kopie vorhalten!</span>' : ''}
+          </div>
+          <div style="border:1px solid #ddd;border-top:none;border-radius:0 0 5px 5px;overflow:hidden;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="background:#f5f5f5;">
+                  <th style="width:36px;padding:7px 10px;text-align:center;font-size:10px;color:#888;border-bottom:1px solid #eee;">✓</th>
+                  <th style="padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:#666;border-bottom:1px solid #eee;">Position</th>
+                  <th style="width:80px;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:#666;border-bottom:1px solid #eee;">Pflicht</th>
+                  ${hatPDF ? '<th style="width:130px;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:#666;border-bottom:1px solid #eee;">PDF</th>' : ''}
+                  <th style="width:120px;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:#666;border-bottom:1px solid #eee;">Notiz</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${kat.items.map((item, i) => `
+                  <tr style="border-bottom:1px solid #f0f0f0;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='white'">
+                    <td style="text-align:center;padding:7px 10px;">
+                      <input type="checkbox" id="pl_${kat.id}_${i}" style="width:15px;height:15px;accent-color:${kat.farbe};cursor:pointer;" />
+                    </td>
+                    <td style="padding:7px 10px;font-size:12px;">${item.text}</td>
+                    <td style="text-align:center;padding:7px 10px;">
+                      ${item.pflicht
+                        ? `<span style="background:#fdecea;color:#922b21;border-radius:3px;padding:2px 7px;font-size:10px;font-weight:700;">🔴 Ja</span>`
+                        : `<span style="background:#f0f0f0;color:#888;border-radius:3px;padding:2px 7px;font-size:10px;">Empfohlen</span>`}
+                    </td>
+                    ${hatPDF ? `<td style="text-align:center;padding:5px 8px;">
+                      ${item.pdfFn
+                        ? `<button onclick="${item.pdfFn}()" style="background:#1a6b3c;color:white;border:none;border-radius:4px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Open Sans',sans-serif;white-space:nowrap;" title="PDF öffnen / drucken">📥 PDF</button>`
+                        : `<span style="color:#ccc;font-size:11px;">–</span>`}
+                    </td>` : ''}
+                    <td style="padding:7px 10px;">
+                      <input type="text" placeholder="Notiz..." style="width:100%;border:1px solid #e0e0e0;border-radius:3px;padding:4px 7px;font-size:11px;font-family:'Open Sans',sans-serif;background:#fafafa;" />
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      <div style="margin-top:24px;border-top:1px solid #ddd;padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:30px;">
+        <div style="border-top:1.5px solid #333;padding-top:6px;font-size:11px;color:#666;">Datum / Unterschrift Aufsichtsführender</div>
+        <div style="border-top:1.5px solid #333;padding-top:6px;font-size:11px;color:#666;">Datum / Unterschrift Geschäftsführer</div>
+      </div>
+      <div style="margin-top:18px;border-top:1px solid #eee;padding-top:10px;font-size:10px;color:#aaa;text-align:center;">
+        Cavier &amp; Sohn Bedachungen GmbH · Zeißstraße 2 · 23560 Lübeck · info@cavier.de · www.cavier.de · Seit 1891
+      </div>
+    `;
+
+    document.getElementById('packliste-content').innerHTML = html;
+    document.getElementById('packliste-overlay').style.display = 'block';
+  }
+
+  function closePackliste() {
+    document.getElementById('packliste-overlay').style.display = 'none';
+  }
+
+  // ══════════════════════════════════════════════════════
+  // PDF-GENERIERUNG – Hilfsfunktion: öffnet Druckfenster
+  // ══════════════════════════════════════════════════════
+
+  // ── Zentrale Druckausgabe: ALLE Dokumente auf Cavier-Firmenbriefbogen
+  const CAVIER_BRIEFBOGEN = "data:image/jpeg;base64,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";
+  function pdfFenster(titel, inhalt) {
+    const win = window.open('', '_blank');
+    if (!win) { alert('Das Druckfenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben und erneut versuchen.'); return; }
+    win.document.write(`<!DOCTYPE html><html lang="de"><head>
+      <meta charset="UTF-8"/>
+      <title>${titel} – Cavier & Sohn</title>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet"/>
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @page { size: A4; margin: 0; }
+        html, body {
+          font-family: 'Open Sans', sans-serif; font-size: 11px; color: #222;
+          background: transparent;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        .briefbogen {
+          position: fixed; top: 0; left: 0; width: 210mm; height: 297mm;
+          background-image: url('${CAVIER_BRIEFBOGEN}');
+          background-size: 210mm 297mm; background-repeat: no-repeat; background-position: top left;
+          z-index: 0;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        .inhalt { position: relative; z-index: 1; padding: 58mm 20mm 38mm 20mm; }
+        .doc-meta { text-align:right; font-size:9px; color:#888; margin-bottom:4px; }
+        h1 { font-family:'Oswald',sans-serif; font-size:18px; color:#2c3e50; text-align:center; margin:6px 0 4px; letter-spacing:1px; }
+        h2 { font-family:'Oswald',sans-serif; font-size:13px; color:#c0392b; margin:14px 0 6px; border-bottom:1px solid #eee; padding-bottom:3px; text-transform:uppercase; letter-spacing:0.5px; }
+        p { margin-bottom:7px; line-height:1.55; font-size:11px; }
+        table { width:100%; border-collapse:collapse; margin:8px 0; font-size:10px; }
+        th { background:#ecf0f1; padding:5px 8px; text-align:left; font-size:9px; text-transform:uppercase; letter-spacing:0.3px; }
+        td { padding:5px 8px; border-bottom:1px solid #eee; vertical-align:top; }
+        .warn { background:#fdecea; border:1px solid #f5c6cb; border-radius:4px; padding:8px 12px; color:#922b21; margin:10px 0; font-size:10px; }
+        .gruen { background:#eafaf1; border:1px solid #a9dfbf; border-radius:4px; padding:8px 12px; color:#1a6b3c; margin:10px 0; font-size:10px; }
+        .sig { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:20px; }
+        .sig-f { border-top:1.5px solid #333; padding-top:5px; font-size:10px; color:#666; }
+        ul { margin:6px 0 6px 18px; }
+        li { margin-bottom:3px; line-height:1.5; }
+        .badge { display:inline-block; background:#fdecea; color:#922b21; border-radius:3px; padding:1px 7px; font-size:9px; font-weight:700; margin-left:6px; }
+        .badge-ok { background:#eafaf1; color:#1a6b3c; }
+        @media screen { body { background:#ccc; } .briefbogen, .inhalt { box-shadow:0 0 8px rgba(0,0,0,0.25); } }
+        @media print {
+          html, body { width: 210mm; height: 297mm; background: transparent !important; }
+          .briefbogen {
+            position: fixed; top: 0; left: 0; width: 210mm; height: 297mm;
+            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            z-index: 0;
+          }
+          .inhalt { position: relative; z-index: 1; box-shadow: none !important; }
+        }
+      </style>
+    </head><body>
+      <div class="briefbogen"></div>
+      <div class="inhalt">
+        <div class="doc-meta">BG BAU: 4006 4412 6721 001 · Erstellt: ${new Date().toLocaleDateString('de-DE')}</div>
+        ${inhalt}
+      </div>
+    </body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 800);
+  }
+
+  // ── PDF 1: Asbestanzeige
+  function pdfAsbestanzeige() {
+    const ma = getMitarbeiterFromTable();
+    const taetigkeiten = getChecked('taetigkeiten');
+    const schutzmassnahmen = getChecked('schutzmassnahmen');
+    const anzeigenNr = holeAnzeigenNr();
+    pdfFenster('Asbestanzeige', `
+      <h1>ASBESTANZEIGE</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">gemäß § 41 GefStoffV i.V.m. TRGS 519 · Anzeige-Nr.: ${anzeigenNr}</p>
+      <div class="warn">⚠ Mindestens 7 Werktage vor Arbeitsbeginn bei der zuständigen Behörde einzureichen!</div>
+      <h2>1. Arbeitgeber</h2>
+      <table><tr><td style="width:40%;color:#888;">Firma</td><td><strong>Cavier &amp; Sohn Bedachungen GmbH</strong></td></tr>
+      <tr><td style="color:#888;">Anschrift</td><td>Zeißstraße 2, 23560 Lübeck</td></tr>
+      <tr><td style="color:#888;">Geschäftsführer</td><td>Alexander Kunkel</td></tr>
+      <tr><td style="color:#888;">Telefon</td><td>0451 580 530</td></tr>
+      <tr><td style="color:#888;">BG BAU</td><td>4006 4412 6721 001</td></tr></table>
+      <h2>2. Baustelle</h2>
+      <table><tr><td style="width:40%;color:#888;">Bezeichnung</td><td>${v('bs_bezeichnung')||'–'}</td></tr>
+      <tr><td style="color:#888;">Anschrift</td><td>${v('bs_adresse')||'–'}</td></tr>
+      <tr><td style="color:#888;">Auftraggeber</td><td>${v('bs_auftraggeber')||'–'}</td></tr>
+      <tr><td style="color:#888;">Arbeitsbeginn</td><td>${fmtDate('bs_beginn')}</td></tr>
+      <tr><td style="color:#888;">Voraussichtl. Ende</td><td>${fmtDate('bs_ende')}</td></tr>
+      <tr><td style="color:#888;">Beschäftigte</td><td>${v('bs_anzahl')||ma.length+' Personen'}</td></tr></table>
+      <h2>3. Art der Arbeiten</h2>
+      <table><tr><td style="width:40%;color:#888;">Beschreibung</td><td>${v('ta_beschreibung')||'–'}</td></tr>
+      <tr><td style="color:#888;">Material</td><td>${v('ta_material')||'–'}</td></tr>
+      <tr><td style="color:#888;">Asbestart</td><td>${v('ta_asbestart')||'–'}</td></tr>
+      <tr><td style="color:#888;">Menge</td><td>${v('ta_menge')||'–'}</td></tr>
+      <tr><td style="color:#888;">Verfahren</td><td>${v('ta_verfahren')||'–'}</td></tr>
+      <tr><td style="color:#888;">Tätigkeiten</td><td>${taetigkeiten.join(', ')||'–'}</td></tr></table>
+      <h2>4. Schutzmaßnahmen</h2>
+      <p>${schutzmassnahmen.join(' · ')||'–'}</p>
+      <h2>5. Sachkundige Mitarbeiter</h2>
+      <table><thead><tr><th>Name</th><th>Geb.</th><th>Funktion</th><th>Sachkunde bis</th><th>Vorsorge bis</th></tr></thead>
+      <tbody>${ma.map(m=>`<tr><td>${esc(m.name)||'–'}</td><td>${esc(m.geb)||'–'}</td><td>${esc(m.funktion)||'–'}</td><td>${esc(m.sachkunde)||'–'}</td><td>${esc(m.vorsorge)||'–'}</td></tr>`).join('')}</tbody></table>
+      <h2>6. Entsorgung</h2>
+      <table><tr><td style="width:40%;color:#888;">Unternehmen</td><td>${v('ent_firma')||'–'}</td></tr>
+      <tr><td style="color:#888;">AVV-Schlüssel</td><td>${v('ent_avv')||'–'}</td></tr>
+      <tr><td style="color:#888;">Deponie</td><td>${v('ent_deponie')||'–'}</td></tr></table>
+      <h2>7. Zuständige Behörde</h2>
+      <table><tr><td style="width:40%;color:#888;">Behörde</td><td>${v('beh_name')||'–'}</td></tr>
+      <tr><td style="color:#888;">Anzeige-Datum</td><td>${fmtDate('beh_datum')}</td></tr>
+      <tr><td style="color:#888;">Übermittlung</td><td>${v('beh_weg')||'–'}</td></tr></table>
+      <div class="sig">
+        <div class="sig-f">Ort, Datum: ${v('sig_ort')||'Lübeck, ___________'}</div>
+        <div class="sig-f">Unterschrift: ${v('sig_name')||'Alexander Kunkel'}, ${v('sig_funktion')||'Geschäftsführer'}</div>
+      </div>`);
+  }
+
+  // ── PDF 2: Betriebsanweisung
+  function pdfBetriebsanweisung() {
+    pdfFenster('Betriebsanweisung Asbest', `
+      <h1>BETRIEBSANWEISUNG</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:6px;">gemäß § 14 Gefahrstoffverordnung</p>
+      <p style="text-align:center;font-size:11px;margin-bottom:14px;"><strong>Tätigkeit:</strong> Demontage von asbesthaltigen Wellplatten der Dacheindeckung<br>
+      <strong>Baustelle:</strong> ${v('bs_bezeichnung')||'___________________________'} · ${v('bs_adresse')||''}</p>
+      <div class="warn">⚠ <strong>Tätigkeiten mit krebserzeugenden Stoffen! Signalwort: GEFAHR</strong></div>
+      <h2>Gefahren für Mensch und Umwelt</h2>
+      <p>Asbestzementplatten enthalten bis zu <strong>15% Weißasbest (Chrysotil)</strong>. Bei mechanischer Bearbeitung, durch Abrieb und/oder Bruch werden einatembare Asbestfasern freigesetzt. Asbesthaltiger Staub ist kaum sichtbar und kann lange in der Luft schweben.</p>
+      <ul>
+        <li>Einatmen von faserhaltigem Staub kann zu dauerhaften Gesundheitsschäden führen</li>
+        <li>Kann Atemwege, Augen, Haut und Verdauungsorgane reizen</li>
+        <li>Dauerhafte Schäden möglich (z.B. Asbestose, Mesotheliom)</li>
+        <li><strong>Asbesthaltiger Staub kann Krebs erzeugen!</strong></li>
+      </ul>
+      <h2>Schutzmaßnahmen und Verhaltensregeln</h2>
+      <ul>
+        <li>Ausgebaute Produktreste <strong>nicht wiederverwenden</strong></li>
+        <li>Arbeitsbereich abgrenzen und kennzeichnen: <em>„Zutritt verboten – Asbestfasern!"</em></li>
+        <li>Staubarme Arbeitsverfahren verwenden – Material <strong>nicht werfen</strong></li>
+        <li>Im Sanierungsbereich <strong>nicht essen, trinken oder rauchen</strong></li>
+        <li>Schutzanzug (Typ 5) und Atemschutzmaske (FFP2/P2) tragen</li>
+        <li>Material vor Demontage <strong>anfeuchten</strong></li>
+        <li>Folie zum Auffangen von Bruchstücken entlang der Außenwand auslegen</li>
+        <li>Nur Industriesauger <strong>Staubklasse H</strong> verwenden</li>
+        <li>Nach Schichtende alle Oberflächen feucht reinigen oder absaugen</li>
+        <li>Straßenkleidung <strong>getrennt</strong> von Arbeitskleidung aufbewahren</li>
+      </ul>
+      <h2>Persönliche Schutzausrüstung (PSA)</h2>
+      <table><tr><th>PSA</th><th>Anforderung</th></tr>
+      <tr><td>Atemschutz</td><td>Partikelfilter P2 an Halbmaske oder FFP2-Maske. Max. 2h Tragezeit, dann 30 min Pause.</td></tr>
+      <tr><td>Körperschutz</td><td>Einweg- oder Mehrwegschutzanzug Typ 5 (atmungsaktiv)</td></tr>
+      <tr><td>Handschutz</td><td>Schutzhandschuhe aus chromatfreiem Leder oder Nitril</td></tr>
+      <tr><td>Hautschutz</td><td>Fetthaltige Hautschutzsalbe für alle unbedeckten Körperteile</td></tr></table>
+      <h2>Verhalten im Gefahrenfall</h2>
+      <p>Bei erheblichem Bruch oder Störungen: <strong>Arbeit sofort unterbrechen</strong>, Bereich sichern, Aufsichtsführenden informieren. Unbefugte fernhalten.</p>
+      <h2>Erste Hilfe</h2>
+      <ul>
+        <li><strong>Nach Augenkontakt:</strong> Nicht reiben – mit viel Wasser spülen, Augenarzt aufsuchen</li>
+        <li><strong>Nach Hautkontakt:</strong> Stark verunreinigte Kleidung ausziehen, mit Wasser reinigen</li>
+        <li><strong>Nach Einatmen:</strong> Frischluft, Arzt verständigen</li>
+        <li><strong>Ersthelfer:</strong> Peter Venohr · Ulf Kossak</li>
+        <li><strong>Unfalltelefon UKSH:</strong> 0451 5004</li>
+      </ul>
+      <h2>Sachgerechte Entsorgung</h2>
+      <p>Asbestzementplatten, kontaminierte Kleinteile, Staubsaugerinhalte direkt am Entstehungsort in <strong>PE-Säcke oder Big-Bags</strong> sammeln. Kennzeichnung: <em>„Achtung – enthält Asbest!"</em> · AVV-Schlüssel: <strong>17 06 01*</strong></p>
+      <div class="sig">
+        <div class="sig-f">Ort, Datum: Lübeck, ${new Date().toLocaleDateString('de-DE')}</div>
+        <div class="sig-f">Unterschrift Aufsichtsführender</div>
+      </div>`);
+  }
+
+  // ── PDF 3: Gefährdungsbeurteilung (Kurzform Asbest)
+  function pdfGefaehrdungsbeurteilung() {
+    pdfFenster('Gefährdungsbeurteilung Asbest', `
+      <h1>GEFÄHRDUNGSBEURTEILUNG</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">nach §§ 5 und 6 ArbSchG i.V.m. TRGS 519 – Asbestarbeiten</p>
+      <table style="margin-bottom:12px;"><tr><td style="width:35%;color:#888;">Firma</td><td><strong>Cavier &amp; Sohn Bedachungen GmbH</strong></td></tr>
+      <tr><td style="color:#888;">Baustelle / Objekt</td><td>${v('bs_bezeichnung')||'___________________________'}</td></tr>
+      <tr><td style="color:#888;">Anschrift Baustelle</td><td>${v('bs_adresse')||'___________________________'}</td></tr>
+      <tr><td style="color:#888;">Zeitraum</td><td>${fmtDate('bs_beginn')} bis ${fmtDate('bs_ende')}</td></tr>
+      <tr><td style="color:#888;">Aufsichtsführender</td><td>Peter Venohr (Sachkundiger)</td></tr>
+      <tr><td style="color:#888;">Bearbeiter</td><td>Alexander Kunkel</td></tr>
+      <tr><td style="color:#888;">Datum</td><td>${new Date().toLocaleDateString('de-DE')}</td></tr></table>
+      <h2>Tätigkeit &amp; Gefährdung</h2>
+      <table><thead><tr><th>Gefährdungsfaktor</th><th>Mögliche Folgen</th><th>Risiko</th></tr></thead>
+      <tbody>
+        <tr><td>Einatmen von Asbestfasern</td><td>Asbestose, Mesotheliom, Lungenkrebs</td><td style="color:#c0392b;font-weight:700;">HOCH</td></tr>
+        <tr><td>Hautkontakt mit Asbeststaub</td><td>Hautreizung, Asbestwarzen</td><td style="color:#d35400;font-weight:700;">MITTEL</td></tr>
+        <tr><td>Augenkontakt mit Fasern</td><td>Bindehautentzündung, Reizung</td><td style="color:#d35400;font-weight:700;">MITTEL</td></tr>
+        <tr><td>Absturz (Dacharbeiten)</td><td>Knochenbrüche, Schädel-Hirn-Trauma</td><td style="color:#c0392b;font-weight:700;">HOCH</td></tr>
+        <tr><td>Unkontrollierter Bruch von Platten</td><td>Erhöhte Faserfreisetzung</td><td style="color:#c0392b;font-weight:700;">HOCH</td></tr>
+      </tbody></table>
+      <h2>Festgelegte Schutzmaßnahmen (T-O-P-Prinzip)</h2>
+      <table><thead><tr><th>Maßnahme</th><th>Beschreibung</th><th>Verantwortlich</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Technisch</strong></td><td>Staubarmes Verfahren, Anfeuchten, Industriesauger Kl. H, Folie auslegen</td><td>Aufsichtsführender</td></tr>
+        <tr><td><strong>Organisatorisch</strong></td><td>Absperrung, Kennzeichnung, Zutrittsverbot, Anzeige bei Behörde, Sachkundige einsetzen</td><td>GF / Aufsichtsführender</td></tr>
+        <tr><td><strong>Persönlich</strong></td><td>FFP2/P2-Maske, Schutzanzug Typ 5, Handschuhe, Hautschutz</td><td>Jeder Beschäftigte</td></tr>
+      </tbody></table>
+      <h2>Arbeitsmedizinische Vorsorge</h2>
+      <table><thead><tr><th>Name</th><th>Vorsorge</th><th>Gültig bis</th><th>Sachkunde bis</th></tr></thead>
+      <tbody>
+        <tr><td>Peter Venohr</td><td>Asbest, Staub, Lärm, Atemschutz Gr. II</td><td>07.2027</td><td>24.10.2027</td></tr>
+        <tr><td>Ulf Kossak</td><td>Asbest, Staub, Lärm, Atemschutz Gr. II</td><td>07.2027</td><td>24.10.2027</td></tr>
+      </tbody></table>
+      <h2>Entsorgung</h2>
+      <p>Asbestzementabfälle werden in PE-Säcken / Big-Bags gesammelt, gekennzeichnet mit <em>„Achtung – enthält Asbest"</em> und als Sonderabfall (AVV 17 06 01*) fachgerecht entsorgt.</p>
+      <div class="gruen">✓ Alle Maßnahmen wurden festgelegt und sind vor Arbeitsbeginn umzusetzen.</div>
+      <div class="sig">
+        <div class="sig-f">Ort, Datum: Lübeck, ${new Date().toLocaleDateString('de-DE')}</div>
+        <div class="sig-f">Unterschrift Aufsichtsführender / GF</div>
+      </div>`);
+  }
+
+  // ── PDF 4: Sachkundenachweis Peter Venohr
+  function pdfSachkundeVenohr() {
+    pdfFenster('Sachkundenachweis Venohr', `
+      <h1>SACHKUNDENACHWEIS</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">gemäß TRGS 519 Anlage 4 – Arbeiten an Asbestzementprodukten</p>
+      <div class="gruen">✓ Sachkunde liegt vor und ist gültig bis <strong>24. Oktober 2027</strong></div>
+      <h2>Angaben zur Person</h2>
+      <table><tr><td style="width:40%;color:#888;">Name</td><td><strong>Peter Venohr</strong></td></tr>
+      <tr><td style="color:#888;">Geburtsdatum</td><td>10.09.1987, Grevesmühlen</td></tr>
+      <tr><td style="color:#888;">Beschäftigt bei</td><td>Cavier &amp; Sohn Bedachungen GmbH, Zeißstraße 2, 23560 Lübeck</td></tr>
+      <tr><td style="color:#888;">Funktion</td><td>Sachkundiger Aufsichtsführender</td></tr></table>
+      <h2>Sachkundenachweis</h2>
+      <table><tr><td style="width:40%;color:#888;">Lehrgang</td><td>Fortbildungslehrgang zur Verlängerung der Sachkunde nach Anlage 4A der TRGS 519 für Arbeiten an Asbestzementprodukten</td></tr>
+      <tr><td style="color:#888;">Datum</td><td>25. Oktober 2021 (8 Lerneinheiten)</td></tr>
+      <tr><td style="color:#888;">Lehrgangsträger</td><td>Berufsbildungsverein des Dachdeckerhandwerks MV und SH e.V. in Zusammenarbeit mit der BG BAU</td></tr>
+      <tr><td style="color:#888;">Staatliche Anerkennung</td><td>Staatliche Arbeitsschutzbehörde bei der Unfallkasse Nord, Az: KI 00008684/FC 2020 FB, 24.02.2020</td></tr>
+      <tr><td style="color:#888;">Sachkunde gültig bis</td><td><strong>24. Oktober 2027</strong></td></tr></table>
+      <h2>Arbeitsmedizinische Vorsorge (AMD BG BAU)</h2>
+      <table><tr><td style="width:40%;color:#888;">Vorsorge am</td><td>17.07.2024</td></tr>
+      <tr><td style="color:#888;">Aktenzeichen</td><td>10.966.817.802</td></tr>
+      <tr><td style="color:#888;">Nächster Termin</td><td>07.2027</td></tr>
+      <tr><td style="color:#888;">Beurteilender Arzt</td><td>Sven Köppen, Facharzt für Arbeitsmedizin, AMD BG BAU Neumünster</td></tr></table>
+      <div class="warn">⚠ Dieses Dokument ist auf der Baustelle im Original oder als Kopie vorzuhalten (§ 41 GefStoffV i.V.m. TRGS 519).</div>
+      <div class="sig">
+        <div class="sig-f">Ort, Datum: Lübeck, ${new Date().toLocaleDateString('de-DE')}</div>
+        <div class="sig-f">Bestätigung Arbeitgeber: Alexander Kunkel, GF</div>
+      </div>`);
+  }
+
+  // ── PDF 5: Sachkundenachweis Ulf Kossak
+  function pdfSachkundeKossak() {
+    pdfFenster('Sachkundenachweis Kossak', `
+      <h1>SACHKUNDENACHWEIS</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">gemäß TRGS 519 Anlage 4 – Arbeiten an Asbestzementprodukten</p>
+      <div class="gruen">✓ Sachkunde liegt vor und ist gültig bis <strong>24. Oktober 2027</strong></div>
+      <h2>Angaben zur Person</h2>
+      <table><tr><td style="width:40%;color:#888;">Name</td><td><strong>Ulf Kossak</strong></td></tr>
+      <tr><td style="color:#888;">Geburtsdatum</td><td>23.03.1967, Lübeck</td></tr>
+      <tr><td style="color:#888;">Beschäftigt bei</td><td>Cavier &amp; Sohn Bedachungen GmbH, Zeißstraße 2, 23560 Lübeck</td></tr>
+      <tr><td style="color:#888;">Funktion</td><td>Sachkundiger Mitarbeiter</td></tr></table>
+      <h2>Sachkundenachweis</h2>
+      <table><tr><td style="width:40%;color:#888;">Lehrgang</td><td>Fortbildungslehrgang zur Verlängerung der Sachkunde nach Anlage 4A der TRGS 519 für Arbeiten an Asbestzementprodukten</td></tr>
+      <tr><td style="color:#888;">Datum</td><td>25. Oktober 2021 (8 Lerneinheiten)</td></tr>
+      <tr><td style="color:#888;">Lehrgangsträger</td><td>Berufsbildungsverein des Dachdeckerhandwerks MV und SH e.V. in Zusammenarbeit mit der BG BAU</td></tr>
+      <tr><td style="color:#888;">Staatliche Anerkennung</td><td>Staatliche Arbeitsschutzbehörde bei der Unfallkasse Nord, Az: KI 00008684/FC 2020 FB, 24.02.2020</td></tr>
+      <tr><td style="color:#888;">Sachkunde gültig bis</td><td><strong>24. Oktober 2027</strong></td></tr></table>
+      <h2>Arbeitsmedizinische Vorsorge (AMD BG BAU)</h2>
+      <table><tr><td style="width:40%;color:#888;">Vorsorge am</td><td>12.07.2024</td></tr>
+      <tr><td style="color:#888;">Aktenzeichen</td><td>10.967.540.945</td></tr>
+      <tr><td style="color:#888;">Nächster Termin</td><td>07.2027</td></tr>
+      <tr><td style="color:#888;">Beurteilender Arzt</td><td>Sven Köppen, Facharzt für Arbeitsmedizin, AMD BG BAU Neumünster</td></tr></table>
+      <div class="warn">⚠ Dieses Dokument ist auf der Baustelle im Original oder als Kopie vorzuhalten (§ 41 GefStoffV i.V.m. TRGS 519).</div>
+      <div class="sig">
+        <div class="sig-f">Ort, Datum: Lübeck, ${new Date().toLocaleDateString('de-DE')}</div>
+        <div class="sig-f">Bestätigung Arbeitgeber: Alexander Kunkel, GF</div>
+      </div>`);
+  }
+
+  // ── PDF 6: Vorsorgebescheinigung Peter Venohr
+  function pdfVorsorgeVenohr() {
+    pdfFenster('Vorsorgebescheinigung Venohr', `
+      <h1>VORSORGEBESCHEINIGUNG</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">nach § 6 Abs. 3 Nr. 3 ArbMedVV – AMD BG BAU</p>
+      <div class="gruen">✓ Arbeitsmedizinische Vorsorge durchgeführt – nächster Termin: <strong>07.2027</strong></div>
+      <h2>Angaben zum Versicherten</h2>
+      <table><tr><td style="width:40%;color:#888;">Name</td><td><strong>Peter Venohr</strong></td></tr>
+      <tr><td style="color:#888;">Geburtsdatum</td><td>10.09.1987</td></tr>
+      <tr><td style="color:#888;">Aktenzeichen</td><td>10.966.817.802</td></tr>
+      <tr><td style="color:#888;">Beschäftigt bei</td><td>Cavier &amp; Sohn Bedachungen GmbH · BG BAU: 4006 4412 6721 001</td></tr></table>
+      <h2>Vorsorge-Anlässe</h2>
+      <table><thead><tr><th>Anlass</th><th>Nächster Termin</th></tr></thead>
+      <tbody>
+        <tr><td>Asbest</td><td>07.2027</td></tr>
+        <tr><td>Einatembarer und Alveolengängiger Staub</td><td>07.2027</td></tr>
+        <tr><td>Lärm</td><td>07.2027</td></tr>
+        <tr><td>Atemschutzgeräte Gruppe II</td><td>07.2027</td></tr>
+        <tr><td>Isocyanate</td><td>07.2027</td></tr>
+        <tr><td>Körperliche Belastung</td><td>07.2027</td></tr>
+        <tr><td>UV-Schutz-Beratung</td><td>07.2027</td></tr>
+      </tbody></table>
+      <h2>Bescheinigung</h2>
+      <table><tr><td style="width:40%;color:#888;">Vorsorge am</td><td>17.07.2024</td></tr>
+      <tr><td style="color:#888;">Bescheinigt am</td><td>31.07.2024</td></tr>
+      <tr><td style="color:#888;">Beurteilender Arzt</td><td>Sven Köppen, Facharzt für Arbeitsmedizin</td></tr>
+      <tr><td style="color:#888;">Einrichtung</td><td>Arbeitsmedizinisches Zentrum Neumünster, Wasbeker Str. 351a, 24537 Neumünster</td></tr>
+      <tr><td style="color:#888;">Auftraggeber</td><td>AMD BG BAU – Arbeitsmedizinisch-Sicherheitstechnischer Dienst der BG BAU</td></tr></table>
+      <p style="font-size:10px;color:#888;margin-top:10px;font-style:italic;">Hinweis: Seit Inkrafttreten der Änderungsverordnung der ArbMedVV enthält die Bescheinigung keine Aussage mehr zur gesundheitlichen Unbedenklichkeit oder Bedenklichkeit.</p>
+      <div class="warn">⚠ Dieses Dokument ist auf der Baustelle im Original oder als Kopie vorzuhalten.</div>`);
+  }
+
+  // ── PDF 7: Vorsorgebescheinigung Ulf Kossak
+  function pdfVorsorgeKossak() {
+    pdfFenster('Vorsorgebescheinigung Kossak', `
+      <h1>VORSORGEBESCHEINIGUNG</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">nach § 6 Abs. 3 Nr. 3 ArbMedVV – AMD BG BAU</p>
+      <div class="gruen">✓ Arbeitsmedizinische Vorsorge durchgeführt – nächster Termin: <strong>07.2027</strong></div>
+      <h2>Angaben zum Versicherten</h2>
+      <table><tr><td style="width:40%;color:#888;">Name</td><td><strong>Ulf Kossak</strong></td></tr>
+      <tr><td style="color:#888;">Geburtsdatum</td><td>23.03.1967</td></tr>
+      <tr><td style="color:#888;">Aktenzeichen</td><td>10.967.540.945</td></tr>
+      <tr><td style="color:#888;">Beschäftigt bei</td><td>Cavier &amp; Sohn Bedachungen GmbH · BG BAU: 4006 4412 6721 001</td></tr></table>
+      <h2>Vorsorge-Anlässe</h2>
+      <table><thead><tr><th>Anlass</th><th>Nächster Termin</th></tr></thead>
+      <tbody>
+        <tr><td>Asbest</td><td>07.2027</td></tr>
+        <tr><td>Einatembarer und Alveolengängiger Staub</td><td>07.2027</td></tr>
+        <tr><td>Lärm</td><td>07.2027</td></tr>
+        <tr><td>Atemschutzgeräte Gruppe II</td><td>07.2027</td></tr>
+        <tr><td>Isocyanate</td><td>07.2027</td></tr>
+        <tr><td>Körperliche Belastung</td><td>07.2027</td></tr>
+        <tr><td>UV-Schutz-Beratung</td><td>07.2027</td></tr>
+      </tbody></table>
+      <h2>Bescheinigung</h2>
+      <table><tr><td style="width:40%;color:#888;">Vorsorge am</td><td>12.07.2024</td></tr>
+      <tr><td style="color:#888;">Bescheinigt am</td><td>30.07.2024</td></tr>
+      <tr><td style="color:#888;">Beurteilender Arzt</td><td>Sven Köppen, Facharzt für Arbeitsmedizin</td></tr>
+      <tr><td style="color:#888;">Einrichtung</td><td>Arbeitsmedizinisches Zentrum Neumünster, Wasbeker Str. 351a, 24537 Neumünster</td></tr>
+      <tr><td style="color:#888;">Auftraggeber</td><td>AMD BG BAU – Arbeitsmedizinisch-Sicherheitstechnischer Dienst der BG BAU</td></tr></table>
+      <p style="font-size:10px;color:#888;margin-top:10px;font-style:italic;">Hinweis: Seit Inkrafttreten der Änderungsverordnung der ArbMedVV enthält die Bescheinigung keine Aussage mehr zur gesundheitlichen Unbedenklichkeit oder Bedenklichkeit.</p>
+      <div class="warn">⚠ Dieses Dokument ist auf der Baustelle im Original oder als Kopie vorzuhalten.</div>`);
+  }
+
+  // ── PDF 8: Notfall- & Erste-Hilfe-Aushang – mit Ersthelfer-Dialog
+  function pdfNotfall() {
+    // Dialog-Overlay einblenden
+    let dlg = document.getElementById('notfall-dlg');
+    if (!dlg) {
+      dlg = document.createElement('div');
+      dlg.id = 'notfall-dlg';
+      dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;';
+      dlg.innerHTML = `
+        <div style="background:white;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.4);max-width:520px;width:100%;overflow:hidden;">
+          <div style="background:#1a6b3c;color:white;padding:14px 20px;font-family:'Oswald',sans-serif;font-size:17px;letter-spacing:0.5px;">
+            🚑 Ersthelfer für den Notfall-Aushang
+          </div>
+          <div style="padding:20px;">
+            <p style="font-size:13px;color:#555;margin-bottom:16px;">Bitte gib die Ersthelfer an, die auf diesem Aushang erscheinen sollen. Du kannst bis zu 5 Personen eintragen.</p>
+            <div id="eh-liste"></div>
+            <button onclick="ehZeile()" style="margin-top:10px;background:transparent;border:1.5px dashed #1a6b3c;color:#1a6b3c;padding:7px 16px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Open Sans',sans-serif;">+ Ersthelfer hinzufügen</button>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+              <button onclick="document.getElementById('notfall-dlg').remove()" style="background:#ecf0f1;border:none;padding:10px 20px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Open Sans',sans-serif;">Abbrechen</button>
+              <button onclick="pdfNotfallErstellen()" style="background:#1a6b3c;color:white;border:none;padding:10px 22px;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Open Sans',sans-serif;">📥 PDF erstellen</button>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(dlg);
+      // Standard-Ersthelfer vorausfüllen aus Mitarbeitertabelle
+      const ma = getMitarbeiterFromTable();
+      const defaults = [
+        { name: 'Peter Venohr', funktion: 'Ersthelfer / Aufsichtsführender' },
+        { name: 'Ulf Kossak',   funktion: 'Ersthelfer / Sachkundiger' },
+      ];
+      defaults.forEach(d => ehZeile(d.name, d.funktion));
+    } else {
+      dlg.style.display = 'flex';
+    }
+  }
+
+  let ehCount = 0;
+  function ehZeile(name='', funktion='Ersthelfer') {
+    const liste = document.getElementById('eh-liste');
+    if (!liste) return;
+    const id = ehCount++;
+    const row = document.createElement('div');
+    row.id = 'eh-row-' + id;
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;margin-bottom:8px;align-items:center;';
+    row.innerHTML = `
+      <input type="text" value="${esc(name)}" placeholder="Name" style="border:1.5px solid #ddd;border-radius:4px;padding:8px 10px;font-size:13px;font-family:'Open Sans',sans-serif;" />
+      <input type="text" value="${esc(funktion)}" placeholder="Funktion" style="border:1.5px solid #ddd;border-radius:4px;padding:8px 10px;font-size:13px;font-family:'Open Sans',sans-serif;" />
+      <button onclick="document.getElementById('eh-row-${id}').remove()" style="background:transparent;border:none;color:#aaa;font-size:18px;cursor:pointer;line-height:1;" title="Entfernen">✕</button>`;
+    liste.appendChild(row);
+  }
+
+  function pdfNotfallErstellen() {
+    // Ersthelfer aus Dialog lesen
+    const rows = document.querySelectorAll('#eh-liste > div');
+    const ersthelfer = [...rows].map(row => {
+      const inputs = row.querySelectorAll('input');
+      return { name: inputs[0]?.value || '', funktion: inputs[1]?.value || 'Ersthelfer' };
+    }).filter(e => e.name.trim());
+
+    document.getElementById('notfall-dlg').remove();
+
+    const ehTabelle = ersthelfer.length > 0
+      ? ersthelfer.map(e => `<tr><td><strong>${esc(e.name)}</strong></td><td>${esc(e.funktion)}</td><td>auf der Baustelle</td></tr>`).join('')
+      : '<tr><td colspan="3" style="color:#888;font-style:italic;">Keine Ersthelfer angegeben</td></tr>';
+
+    pdfFenster('Notfall & Erste Hilfe', `
+      <h1>NOTFALL- &amp; ERSTE-HILFE-AUSHANG</h1>
+      <p style="text-align:center;color:#888;font-size:10px;margin-bottom:14px;">Asbestbaustelle – Cavier &amp; Sohn Bedachungen GmbH</p>
+      <p style="text-align:center;font-size:11px;margin-bottom:14px;"><strong>Baustelle:</strong> ${v('bs_bezeichnung')||'___________________________'} · ${v('bs_adresse')||''}</p>
+      <div class="warn" style="font-size:13px;text-align:center;padding:14px;">
+        🚨 <strong>NOTRUF: 112</strong> &nbsp;|&nbsp; 🏥 <strong>UKSH Unfalltelefon: 0451 5004</strong>
+      </div>
+      <h2>Ersthelfer auf dieser Baustelle</h2>
+      <table><thead><tr><th>Name</th><th>Funktion</th><th>Erreichbar</th></tr></thead>
+      <tbody>${ehTabelle}</tbody></table>
+      <h2>Wichtige Notfallnummern</h2>
+      <table><thead><tr><th>Stelle</th><th>Nummer</th></tr></thead>
+      <tbody>
+        <tr><td>Notruf Feuerwehr / Rettungsdienst</td><td><strong>112</strong></td></tr>
+        <tr><td>Polizei</td><td><strong>110</strong></td></tr>
+        <tr><td>UKSH Unfalltelefon Lübeck</td><td><strong>0451 5004</strong></td></tr>
+        <tr><td>Giftnotruf Berlin</td><td><strong>030 19240</strong></td></tr>
+        <tr><td>BG BAU Präventionshotline</td><td><strong>0800 8020100</strong></td></tr>
+        <tr><td>Amt für Arbeitsschutz (Anzeige)</td><td>Asbestanzeigen@lasg.landsh.de</td></tr>
+        <tr><td>Geschäftsführer Alexander Kunkel</td><td>0451 580 530</td></tr>
+      </tbody></table>
+      <h2>Erste-Hilfe-Maßnahmen bei Asbestexposition</h2>
+      <table><thead><tr><th>Situation</th><th>Maßnahme</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Einatmen von Asbeststaub</strong></td><td>Sofort Frischluft! Betroffenen aus dem Bereich bringen. Arzt verständigen.</td></tr>
+        <tr><td><strong>Augenkontakt</strong></td><td>Nicht reiben! Mit viel Wasser (mind. 10 Min.) spülen. Augenarzt aufsuchen.</td></tr>
+        <tr><td><strong>Hautkontakt</strong></td><td>Kontaminierte Kleidung ausziehen. Haut gründlich mit Wasser waschen.</td></tr>
+        <tr><td><strong>Verschlucken</strong></td><td>Mund mit Wasser ausspülen. Arzt verständigen. Kein Erbrechen auslösen.</td></tr>
+        <tr><td><strong>Unfall / Sturz</strong></td><td>112 rufen. Betroffenen nicht bewegen (Wirbelsäule!). Ersthelfer alarmieren.</td></tr>
+      </tbody></table>
+      <h2>Standort Erste-Hilfe-Material</h2>
+      <p>Erste-Hilfe-Kasten (DIN 13157) befindet sich: <strong>___________________________</strong></p>
+      <div class="gruen">✓ Dieser Aushang ist gut sichtbar auf der Baustelle anzubringen!</div>`);
+  }
+
+  function printPackliste() {
+    const content = document.getElementById('packliste-content').innerHTML;
+    const win = window.open('', '_blank');
+    if (!win) { alert('Das Druckfenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben und erneut versuchen.'); return; }
+    win.document.write(`<!DOCTYPE html><html lang="de"><head>
+      <meta charset="UTF-8"/>
+      <title>Packliste Asbest – Cavier & Sohn</title>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet"/>
+      <style>
+        body { font-family: 'Open Sans', sans-serif; margin: 15mm 18mm; font-size: 12px; color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f5f5f5; padding: 6px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; color: #666; border-bottom: 1px solid #ddd; }
+        td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; font-size: 11px; }
+        input[type=checkbox] { width: 13px; height: 13px; }
+        input[type=text] { width: 100%; border: 1px solid #ddd; border-radius: 3px; padding: 3px 6px; font-size: 10px; }
+        @media print { input[type=text] { border: none; border-bottom: 1px solid #ccc; border-radius: 0; } }
+      </style>
+    </head><body>${content}</body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 600);
+  }
+
+  // ── Beim Start: automatisch gespeicherten Entwurf anbieten
+  autosaveWiederherstellen();
+</script>
+</body>
+</html>
